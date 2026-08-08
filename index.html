@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en" data-lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Rustam Bulatov — Film Director</title>
+<meta name="description" content="Film director working in light, grain and unrepeatable moments. Commercials, music videos and short films." />
+<meta name="theme-color" content="#08111a" />
+
+<meta property="og:type" content="website" />
+<meta property="og:title" content="Rustam Bulatov — Film Director" />
+<meta property="og:description" content="Commercials, music videos and short films." />
+<meta property="og:image" content="assets/img/og.jpg" />
+<meta name="twitter:card" content="summary_large_image" />
+
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700&family=Inter:wght@300;400;500&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+<!-- film grain + vignette overlays -->
+<div class="grain" aria-hidden="true"></div>
+<div class="vignette" aria-hidden="true"></div>
+
+<!-- ░░ INTRO ░░ -->
+<div class="intro" id="intro" aria-hidden="true">
+  <div class="intro__inner">
+    <span class="intro__name" id="introName"></span>
+    <span class="intro__bar"><i></i></span>
+  </div>
+</div>
+
+<!-- ░░ NAV ░░ -->
+<header class="nav" id="nav">
+  <a class="nav__brand" href="#top">
+    <span id="brandName"></span><sup id="brandMark"></sup>
+  </a>
+
+  <nav class="nav__links" id="navLinks">
+    <a href="#work" data-i18n="nav.work"></a>
+    <a href="#approach" data-i18n="nav.approach"></a>
+    <a href="#frames" data-i18n="nav.frames"></a>
+    <a href="#contact" data-i18n="nav.contact"></a>
+  </nav>
+
+  <div class="nav__right">
+    <div class="lang" role="group" aria-label="Language">
+      <button type="button" class="lang__btn is-active" data-setlang="en">EN</button>
+      <span class="lang__sep">/</span>
+      <button type="button" class="lang__btn" data-setlang="pl">PL</button>
+    </div>
+    <button class="nav__burger" id="burger" aria-label="Menu" aria-expanded="false">
+      <i></i><i></i>
+    </button>
+  </div>
+</header>
+
+<main id="top">
+
+  <!-- ░░ HERO ░░ -->
+  <section class="hero" id="hero">
+    <div class="hero__media" id="heroMedia"></div>
+    <div class="hero__scrim"></div>
+
+    <div class="hero__grid">
+      <div class="hero__head">
+        <p class="eyebrow reveal" data-i18n="hero.eyebrow"></p>
+        <h1 class="hero__title">
+          <span class="line reveal"><span data-i18n="hero.title.1"></span></span>
+          <span class="line reveal"><span data-i18n="hero.title.2"></span></span>
+          <span class="line reveal"><span data-i18n="hero.title.3"></span></span>
+        </h1>
+      </div>
+
+      <div class="hero__foot">
+        <div class="hero__clock reveal">
+          <span class="dot"></span>
+          <span id="clockCity"></span>,&nbsp;<span id="clockTime">--:--</span>
+        </div>
+
+        <div class="hero__aside reveal">
+          <p class="hero__lede" data-i18n="hero.lede"></p>
+          <div class="hero__cta">
+            <button class="btn btn--primary" id="reelBtn">
+              <span class="btn__ico" aria-hidden="true">
+                <svg viewBox="0 0 12 14" fill="currentColor"><path d="M12 7 0 14V0z"/></svg>
+              </span>
+              <span data-i18n="hero.cta.reel"></span>
+            </button>
+            <a class="btn btn--ghost" href="#work"><span data-i18n="hero.cta.work"></span></a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <a class="hero__scroll" href="#work" aria-hidden="true">
+      <span data-i18n="hero.scroll"></span>
+      <i></i>
+    </a>
+  </section>
+
+  <!-- ░░ MARQUEE ░░ -->
+  <div class="marquee" aria-hidden="true">
+    <div class="marquee__track" id="marqueeTrack"></div>
+  </div>
+
+  <!-- ░░ WORK ░░ -->
+  <section class="section" id="work">
+    <div class="section__head">
+      <p class="label reveal" data-i18n="work.label"></p>
+      <h2 class="section__title reveal" data-i18n="work.title"></h2>
+      <p class="section__note reveal" data-i18n="work.note"></p>
+    </div>
+    <div class="work" id="workGrid"></div>
+  </section>
+
+  <!-- ░░ APPROACH ░░ -->
+  <section class="section section--approach" id="approach">
+    <div class="section__head">
+      <p class="label reveal" data-i18n="approach.label"></p>
+      <h2 class="section__title reveal" data-i18n="approach.title"></h2>
+    </div>
+
+    <div class="approach">
+      <div class="approach__media reveal">
+        <figure class="frame frame--tall">
+          <img id="approachPortrait" alt="" loading="lazy" decoding="async" />
+        </figure>
+      </div>
+
+      <div class="approach__body">
+        <div class="approach__statement" id="approachStatement"></div>
+
+        <h3 class="micro reveal" data-i18n="approach.principles"></h3>
+        <ol class="principles" id="principles"></ol>
+
+        <h3 class="micro reveal" data-i18n="approach.facts"></h3>
+        <dl class="facts" id="facts"></dl>
+      </div>
+    </div>
+  </section>
+
+  <!-- ░░ FRAMES ░░ -->
+  <section class="section" id="frames">
+    <div class="section__head">
+      <p class="label reveal" data-i18n="frames.label"></p>
+      <h2 class="section__title reveal" data-i18n="frames.title"></h2>
+      <p class="section__note reveal" data-i18n="frames.note"></p>
+    </div>
+    <div class="gallery" id="gallery"></div>
+  </section>
+
+  <!-- ░░ CONTACT ░░ -->
+  <section class="section section--contact" id="contact">
+    <div class="section__head">
+      <p class="label reveal" data-i18n="contact.label"></p>
+      <h2 class="section__title reveal" data-i18n="contact.title"></h2>
+    </div>
+
+    <div class="contact">
+      <div class="contact__main">
+        <p class="contact__lede reveal" data-i18n="contact.lede"></p>
+        <a class="contact__email reveal" id="contactEmail" href="#"></a>
+        <div class="contact__row reveal">
+          <button class="btn btn--ghost btn--sm" id="copyEmail"><span data-i18n="contact.copy"></span></button>
+          <a class="btn btn--ghost btn--sm" id="resumeBtn" href="#" hidden><span data-i18n="contact.resume"></span></a>
+        </div>
+      </div>
+
+      <div class="contact__side">
+        <div class="contact__block reveal" id="phoneBlock" hidden>
+          <span class="micro" data-i18n="contact.phone"></span>
+          <a id="contactPhone" href="#"></a>
+        </div>
+        <div class="contact__block reveal">
+          <span class="micro" data-i18n="contact.social"></span>
+          <ul class="socials" id="socials"></ul>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">
+  <span id="footYear"></span>
+  <span id="footName"></span>
+  <span data-i18n="footer.rights"></span>
+  <span class="footer__spacer"></span>
+  <span data-i18n="footer.built"></span>
+</footer>
+
+<!-- ░░ VIDEO MODAL ░░ -->
+<div class="modal" id="modal" hidden>
+  <button class="modal__backdrop" id="modalBackdrop" tabindex="-1" aria-hidden="true"></button>
+  <div class="modal__panel" role="dialog" aria-modal="true" aria-label="Video">
+    <button class="modal__close" id="modalClose">
+      <span data-i18n="modal.close"></span>
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M2 2l12 12M14 2L2 14"/></svg>
+    </button>
+    <div class="modal__stage" id="modalStage"></div>
+    <div class="modal__meta" id="modalMeta"></div>
+  </div>
+</div>
+
+<!-- ░░ LIGHTBOX ░░ -->
+<div class="lightbox" id="lightbox" hidden>
+  <button class="lightbox__backdrop" id="lbBackdrop" tabindex="-1" aria-hidden="true"></button>
+  <button class="lightbox__nav lightbox__nav--prev" id="lbPrev" aria-label="Previous">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M15 4L7 12l8 8"/></svg>
+  </button>
+  <figure class="lightbox__figure">
+    <img id="lbImg" alt="" />
+    <figcaption id="lbCap"></figcaption>
+  </figure>
+  <button class="lightbox__nav lightbox__nav--next" id="lbNext" aria-label="Next">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M9 4l8 8-8 8"/></svg>
+  </button>
+  <button class="lightbox__close" id="lbClose" aria-label="Close">
+    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M2 2l12 12M14 2L2 14"/></svg>
+  </button>
+</div>
+
+<script src="content.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
