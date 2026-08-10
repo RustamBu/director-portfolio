@@ -22,7 +22,6 @@
   /* ----------------------------------------------------------------- lang */
   const LANGS = ["en", "pl"];
   let lang = (function () {
-    // ?lang=pl — можно давать прямую ссылку на нужную версию
     const q = (location.search.match(/[?&]lang=([a-z]{2})/i) || [])[1];
     if (q && LANGS.includes(q.toLowerCase())) return q.toLowerCase();
     let saved = null;
@@ -43,149 +42,149 @@
     $$("[data-i18n]").forEach((n) => { n.textContent = t(n.dataset.i18n); });
     $$("[data-setlang]").forEach((b) => b.classList.toggle("is-active", b.dataset.setlang === lang));
 
-    renderMarquee();
     renderWork();
-    renderApproach();
-    renderGallery();
+    renderFrames();
+    renderAbout();
     renderContact();
-    updateClock();
+    renderFooter();
     observeReveals();
   }
 
-  /* ---------------------------------------------------------------- brand */
+  /* ---------------------------------------------------------------- static */
   function renderStatic() {
     $("#brandName").textContent = SITE.name;
-    $("#brandMark").textContent = SITE.mark || "";
-    $("#introName").textContent = SITE.name;
-    $("#footName").textContent = SITE.name;
-    $("#footYear").textContent = "© " + new Date().getFullYear();
     document.title = SITE.name.replace(/\s+/g, " ") + " — Film Director";
 
-    // hero background
-    const box = $("#heroMedia");
-    const m = SITE.heroMedia || {};
-    box.innerHTML = "";
-    if (m.kind === "video" && m.src) {
-      const v = el("video");
-      v.src = m.src;
-      if (m.poster) v.poster = m.poster;
-      v.autoplay = true; v.muted = true; v.loop = true;
-      v.playsInline = true; v.setAttribute("playsinline", "");
-      box.appendChild(v);
-    } else if (m.src) {
-      const i = el("img");
-      i.src = m.src; i.alt = ""; i.decoding = "async";
-      i.onerror = () => { i.remove(); };
-      box.appendChild(i);
+    const r = SITE.reel || {};
+    $("#reelYear").textContent = r.year || "";
+    $("#reelDuration").textContent = r.duration || "";
+
+    const poster = $("#reelPoster");
+    if (r.poster) {
+      poster.src = r.poster;
+      poster.onerror = () => { poster.style.display = "none"; };
     }
   }
 
-  /* -------------------------------------------------------------- marquee */
-  function renderMarquee() {
-    const track = $("#marqueeTrack");
-    const items = (SITE.marquee || []).map((x) => `<span>${esc(x)}</span>`).join("");
-    track.innerHTML = items + items; // дублируем для бесшовной прокрутки
+  /* ------------------------------------------------------------- footer */
+  function renderFooter() {
+    $("#footCopy").textContent = "© " + new Date().getFullYear() + " " + SITE.name;
+    $("#footCity").textContent = L(SITE.city);
   }
 
   /* ----------------------------------------------------------------- work */
+  let openRow = -1;
+
   function renderWork() {
-    const grid = $("#workGrid");
-    grid.innerHTML = "";
+    const idx = $("#workIndex");
+    idx.innerHTML = "";
+    openRow = -1;
+
+    const n = PROJECTS.length;
+    $("#workCount").textContent =
+      t("work.label") + " — " + String(n).padStart(2, "0") + " " + t("work.projects");
 
     PROJECTS.forEach((p, i) => {
-      const card = el("article", "card reveal" + (p.featured ? " card--featured" : ""));
-      const hasVideo = !!(p.video && (p.video.id || p.video.src));
+      const row = el("div", "idx__row reveal");
 
-      const thumb = el("button", "card__thumb");
-      thumb.type = "button";
-      thumb.setAttribute("aria-label", p.title);
+      const head = el("button", "idx__head");
+      head.type = "button";
+      head.innerHTML =
+        '<span class="idx__num">' + String(i + 1).padStart(2, "0") + "</span>" +
+        '<span class="idx__title">' + esc(p.title) + "</span>" +
+        '<span class="idx__client">' + esc(L(p.client)) + "</span>" +
+        '<span class="idx__format">' + esc(L(p.format)) + "</span>" +
+        '<span class="idx__year">' + esc(p.year || "") + "</span>";
 
+      const panel = el("div", "idx__panel");
+      const inner = el("div", "idx__panel-inner");
+      const expand = el("div", "idx__expand");
+
+      const still = el("button", "idx__still");
+      still.type = "button";
+      still.setAttribute("aria-label", p.title);
       if (p.poster) {
         const img = el("img");
         img.src = p.poster; img.alt = p.title;
-        img.loading = i > 1 ? "lazy" : "eager";
-        img.decoding = "async";
+        img.loading = "lazy"; img.decoding = "async";
         img.onerror = () => { img.style.display = "none"; };
-        thumb.appendChild(img);
+        still.appendChild(img);
       }
+      still.appendChild(
+        el("span", "reel__play",
+          '<svg viewBox="0 0 20 22" fill="none"><path d="M19 11 1 21V1z" stroke="currentColor" stroke-width="1"/></svg>')
+      );
+      still.addEventListener("click", () => openModal(p));
 
-      if (hasVideo) {
-        thumb.appendChild(
-          el("span", "card__play",
-            '<svg viewBox="0 0 12 14" fill="currentColor"><path d="M12 7 0 14V0z"/></svg>')
+      const credits = el("dl", "idx__credits");
+      (p.credits || []).forEach((c) => {
+        credits.appendChild(
+          el("div", "idx__credit",
+            "<dt>" + esc(L(c.role)) + "</dt><dd>" + esc(c.name) + "</dd>")
         );
+      });
+      const watch = el("a", "idx__watch mono");
+      watch.href = "#";
+      watch.textContent = t("work.watch");
+      watch.addEventListener("click", (e) => { e.preventDefault(); openModal(p); });
+      credits.appendChild(watch);
+
+      expand.appendChild(still);
+      expand.appendChild(credits);
+      inner.appendChild(expand);
+      panel.appendChild(inner);
+
+      head.addEventListener("click", () => toggleRow(i));
+
+      row.appendChild(head);
+      row.appendChild(panel);
+      row.dataset.i = String(i);
+      idx.appendChild(row);
+    });
+  }
+
+  function toggleRow(i) {
+    const rows = $$(".idx__row");
+    rows.forEach((r) => {
+      if (Number(r.dataset.i) === i && openRow !== i) {
+        r.classList.add("is-open");
       } else {
-        thumb.appendChild(el("span", "card__soon", esc(t("work.soon"))));
+        r.classList.remove("is-open");
       }
-
-      thumb.addEventListener("click", () => openModal(p));
-      card.appendChild(thumb);
-
-      card.appendChild(
-        el("div", "card__meta",
-          '<div><h3 class="card__title">' + esc(p.title) + "</h3>" +
-          (p.client ? '<span class="card__client">' + esc(p.client) + "</span>" : "") +
-          "</div>" +
-          '<div class="card__right"><span class="card__type">' + esc(L(p.type)) + "</span>" +
-          (p.year ? '<span class="card__year">' + esc(p.year) + "</span>" : "") +
-          "</div>")
-      );
-
-      grid.appendChild(card);
     });
+    openRow = openRow === i ? -1 : i;
   }
 
-  /* ------------------------------------------------------------- approach */
-  function renderApproach() {
-    const img = $("#approachPortrait");
-    if (APPROACH.portrait) {
-      img.src = APPROACH.portrait;
-      img.alt = SITE.name;
-      img.onerror = () => { img.style.display = "none"; };
-    }
-
-    const st = $("#approachStatement");
-    st.innerHTML = "";
-    (L(APPROACH.statement) || []).forEach((para) => {
-      st.appendChild(el("p", "reveal", esc(para)));
-    });
-
-    const pr = $("#principles");
-    pr.innerHTML = "";
-    (APPROACH.principles || []).forEach((item, i) => {
-      pr.appendChild(
-        el("li", "reveal",
-          '<span class="principles__n">' + String(i + 1).padStart(2, "0") + "</span>" +
-          "<h4>" + esc(L(item.title)) + "</h4>" +
-          "<p>" + esc(L(item.text)) + "</p>")
-      );
-    });
-
-    const fx = $("#facts");
-    fx.innerHTML = "";
-    (APPROACH.facts || []).forEach((f) => {
-      fx.appendChild(
-        el("div", "row reveal",
-          "<dt>" + esc(L(f.k)) + "</dt><dd>" + esc(L(f.v)) + "</dd>")
-      );
-    });
-  }
-
-  /* -------------------------------------------------------------- gallery */
-  function renderGallery() {
-    const g = $("#gallery");
+  /* -------------------------------------------------------------- frames */
+  function renderFrames() {
+    const g = $("#framesGrid");
     g.innerHTML = "";
     PHOTOS.forEach((ph, i) => {
-      const fig = el("figure", "shot reveal");
+      const fig = el("figure", "frame reveal");
       const img = el("img");
       img.src = ph.src; img.alt = L(ph.caption) || "";
-      img.loading = i > 5 ? "lazy" : "eager";
-      img.decoding = "async";
-      img.onerror = () => { fig.style.opacity = ".25"; };
+      img.loading = "lazy"; img.decoding = "async";
+      img.onerror = () => { fig.style.opacity = ".3"; };
       fig.appendChild(img);
-      if (L(ph.caption)) fig.appendChild(el("figcaption", null, esc(L(ph.caption))));
+      if (L(ph.caption)) fig.appendChild(el("figcaption", "mono", esc(L(ph.caption))));
       fig.addEventListener("click", () => openLightbox(i));
       g.appendChild(fig);
+    });
+  }
+
+  /* --------------------------------------------------------------- about */
+  function renderAbout() {
+    $("#aboutText").textContent = L(APPROACH.statement);
+
+    const fx = $("#aboutFacts");
+    fx.innerHTML = "";
+    (APPROACH.facts || []).forEach((f) => {
+      const v = L(f.v);
+      fx.appendChild(
+        el("div", "row",
+          "<dt>" + esc(L(f.k)) + "</dt>" +
+          (v ? '<span class="sep">—</span><dd>' + esc(v) + "</dd>" : ""))
+      );
     });
   }
 
@@ -195,44 +194,14 @@
     mail.textContent = SITE.email;
     mail.href = "mailto:" + SITE.email;
 
-    const phoneBlock = $("#phoneBlock");
-    if (SITE.phone) {
-      phoneBlock.hidden = false;
-      const a = $("#contactPhone");
-      a.textContent = SITE.phone;
-      a.href = "tel:" + SITE.phone.replace(/[^\d+]/g, "");
-    } else {
-      phoneBlock.hidden = true;
-    }
-
-    const cv = $("#resumeBtn");
-    if (SITE.resumeUrl) { cv.hidden = false; cv.href = SITE.resumeUrl; cv.target = "_blank"; cv.rel = "noopener"; }
-    else { cv.hidden = true; }
-
     const s = $("#socials");
     s.innerHTML = "";
     (SITE.socials || []).forEach((so) => {
       const li = el("li");
       li.innerHTML =
-        '<a href="' + esc(so.url) + '" target="_blank" rel="noopener">' +
-        esc(so.label) + "<span>" + esc(so.handle || "") + "</span></a>";
+        '<a href="' + esc(so.url) + '" target="_blank" rel="noopener">' + esc(so.label) + "</a>";
       s.appendChild(li);
     });
-  }
-
-  /* ---------------------------------------------------------------- clock */
-  function updateClock() {
-    const cityEl = $("#clockCity");
-    if (cityEl) cityEl.textContent = L(SITE.city);
-    const timeEl = $("#clockTime");
-    if (!timeEl) return;
-    try {
-      timeEl.textContent = new Intl.DateTimeFormat(lang === "pl" ? "pl-PL" : "en-GB", {
-        hour: "2-digit", minute: "2-digit", hour12: false, timeZone: SITE.timezone,
-      }).format(new Date());
-    } catch (e) {
-      timeEl.textContent = new Date().toTimeString().slice(0, 5);
-    }
   }
 
   /* --------------------------------------------------------------- modal */
@@ -251,14 +220,14 @@
               "?autoplay=1&rel=0&modestbranding=1&playsinline=1";
       f.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
       f.allowFullscreen = true;
-      f.title = p.title;
+      f.title = p.title || "Video";
       stage.appendChild(f);
     } else if (v.kind === "vimeo" && v.id) {
       const f = el("iframe");
       f.src = "https://player.vimeo.com/video/" + encodeURIComponent(v.id) + "?autoplay=1&title=0&byline=0&portrait=0";
       f.allow = "autoplay; fullscreen; picture-in-picture";
       f.allowFullscreen = true;
-      f.title = p.title;
+      f.title = p.title || "Video";
       stage.appendChild(f);
     } else if (v.kind === "mp4" && v.src) {
       const vid = el("video");
@@ -270,17 +239,8 @@
       stage.appendChild(el("div", "placeholder", esc(t("work.soon"))));
     }
 
-    const credits = (p.credits || [])
-      .map((c) => "<span>" + esc(L(c.role)) + " — " + esc(c.name) + "</span>")
-      .join("");
-
-    $("#modalMeta").innerHTML =
-      "<div><h3>" + esc(p.title) + "</h3>" +
-      (L(p.description) ? "<p>" + esc(L(p.description)) + "</p>" : "") +
-      "</div>" +
-      '<div class="side"><span class="micro">' + esc(L(p.type)) + " · " + esc(p.year || "") + "</span>" +
-      (credits ? '<div class="modal__credits">' + credits + "</div>" : "") +
-      "</div>";
+    const bits = [p.title, L(p.format), p.year].filter(Boolean).map(esc);
+    $("#modalMeta").textContent = bits.join(" · ");
 
     modal.hidden = false;
     document.body.classList.add("is-locked");
@@ -346,37 +306,21 @@
     if (!io) {
       io = new IntersectionObserver(
         (entries) => {
-          entries.forEach((entry, i) => {
+          entries.forEach((entry) => {
             if (!entry.isIntersecting) return;
-            const n = entry.target;
-            const delay = Number(n.dataset.delay || 0);
-            setTimeout(() => n.classList.add("is-in"), delay);
-            io.unobserve(n);
+            entry.target.classList.add("is-in");
+            io.unobserve(entry.target);
           });
         },
-        { rootMargin: "0px 0px -8% 0px", threshold: 0.06 }
+        { rootMargin: "0px 0px -6% 0px", threshold: 0.06 }
       );
     }
-    $$(".reveal:not(.is-in)").forEach((n, i) => {
-      // лёгкая каскадная задержка внутри одного контейнера
-      if (!n.dataset.delay) {
-        const sibs = Array.from(n.parentElement ? n.parentElement.children : []);
-        const idx = sibs.indexOf(n);
-        n.dataset.delay = String(Math.min(idx, 5) * 70);
-      }
-      io.observe(n);
-    });
+    $$(".reveal:not(.is-in)").forEach((n) => io.observe(n));
   }
 
   /* ------------------------------------------------------------------ nav */
-  const nav = $("#nav");
   const navLinks = $("#navLinks");
   const burger = $("#burger");
-
-  function onScroll() {
-    nav.classList.toggle("is-stuck", window.scrollY > 40);
-  }
-  window.addEventListener("scroll", onScroll, { passive: true });
 
   burger.addEventListener("click", () => {
     const open = navLinks.classList.toggle("is-open");
@@ -404,45 +348,20 @@
     openModal({
       title: SITE.name,
       video: SITE.reel,
-      year: String(new Date().getFullYear()),
-      type: { en: "Showreel", pl: "Showreel" },
-      description: { en: "", pl: "" },
-      credits: [],
+      poster: (SITE.reel || {}).poster,
+      year: (SITE.reel || {}).year || String(new Date().getFullYear()),
+      format: { en: "Showreel", pl: "Showreel" },
     })
   );
-
-  $("#copyEmail").addEventListener("click", async (e) => {
-    const span = e.currentTarget.querySelector("span");
-    try {
-      await navigator.clipboard.writeText(SITE.email);
-      span.textContent = t("contact.copied");
-      setTimeout(() => { span.textContent = t("contact.copy"); }, 1800);
-    } catch (err) {
-      window.location.href = "mailto:" + SITE.email;
-    }
-  });
 
   /* ----------------------------------------------------------------- boot */
   renderStatic();
   applyLang();
-  onScroll();
-  setInterval(updateClock, 15000);
 
   // ?noanim=1 — мгновенно показать всё без анимаций (удобно для скриншотов)
   if (/[?&]noanim/.test(location.search)) {
-    $("#intro").classList.add("is-done");
     $$(".reveal").forEach((n) => n.classList.add("is-in"));
     document.documentElement.style.scrollBehavior = "auto";
-    document.documentElement.classList.add("is-shot");
     return;
   }
-
-  window.addEventListener("load", () => {
-    setTimeout(() => {
-      $("#intro").classList.add("is-done");
-      observeReveals();
-    }, 900);
-  });
-  // страховка, если load не сработал
-  setTimeout(() => $("#intro").classList.add("is-done"), 3500);
 })();
