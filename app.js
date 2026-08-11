@@ -46,7 +46,6 @@
     renderMarquee();
     renderWork();
     renderApproach();
-    renderGallery();
     renderContact();
     updateClock();
     observeReveals();
@@ -171,24 +170,6 @@
     });
   }
 
-  /* -------------------------------------------------------------- gallery */
-  function renderGallery() {
-    const g = $("#gallery");
-    g.innerHTML = "";
-    PHOTOS.forEach((ph, i) => {
-      const fig = el("figure", "shot reveal");
-      const img = el("img");
-      img.src = ph.src; img.alt = L(ph.caption) || "";
-      img.loading = i > 5 ? "lazy" : "eager";
-      img.decoding = "async";
-      img.onerror = () => { fig.style.opacity = ".25"; };
-      fig.appendChild(img);
-      if (L(ph.caption)) fig.appendChild(el("figcaption", null, esc(L(ph.caption))));
-      fig.addEventListener("click", () => openLightbox(i));
-      g.appendChild(fig);
-    });
-  }
-
   /* -------------------------------------------------------------- contact */
   function renderContact() {
     const mail = $("#contactEmail");
@@ -297,43 +278,8 @@
   $("#modalClose").addEventListener("click", closeModal);
   $("#modalBackdrop").addEventListener("click", closeModal);
 
-  /* ------------------------------------------------------------ lightbox */
-  const lb = $("#lightbox");
-  let lbIndex = 0;
-
-  function openLightbox(i) {
-    lbIndex = i;
-    paintLightbox();
-    lb.hidden = false;
-    document.body.classList.add("is-locked");
-  }
-  function paintLightbox() {
-    const ph = PHOTOS[lbIndex];
-    if (!ph) return;
-    $("#lbImg").src = ph.src;
-    $("#lbImg").alt = L(ph.caption) || "";
-    $("#lbCap").textContent = L(ph.caption) || "";
-  }
-  function stepLightbox(d) {
-    lbIndex = (lbIndex + d + PHOTOS.length) % PHOTOS.length;
-    paintLightbox();
-  }
-  function closeLightbox() {
-    lb.hidden = true;
-    document.body.classList.remove("is-locked");
-  }
-
-  $("#lbBackdrop").addEventListener("click", closeLightbox);
-  $("#lbClose").addEventListener("click", closeLightbox);
-  $("#lbPrev").addEventListener("click", () => stepLightbox(-1));
-  $("#lbNext").addEventListener("click", () => stepLightbox(1));
-
   document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape") { if (!modal.hidden) closeModal(); if (!lb.hidden) closeLightbox(); }
-    if (!lb.hidden) {
-      if (e.key === "ArrowLeft") stepLightbox(-1);
-      if (e.key === "ArrowRight") stepLightbox(1);
-    }
+    if (e.key === "Escape") { if (!modal.hidden) closeModal(); }
   });
 
   /* --------------------------------------------------------------- reveal */
