@@ -16,7 +16,7 @@ const SITE = {
   timezone: "Europe/Warsaw",
 
   // Контакты
-  email: "rusyabulatov05@gmail.com",
+  email: "rustambulatov05@gmail.com",
   phone: "", // например "+48 000 000 000" — оставь "" чтобы скрыть
 
   // Соцсети. Убери строку, если не нужна.
@@ -213,23 +213,6 @@ const APPROACH = {
 };
 
 /* -------------------------------------------------------------------------
-   ФОТО — портреты и бекстейдж
-   Кладка масонри: любые пропорции подходят, ничего подгонять не нужно.
-   Просто добавляй или удаляй строки.
-   ------------------------------------------------------------------------- */
-
-const PHOTOS = [
-  { src: "assets/img/photo-1.jpg", caption: { en: "On set — Metropolis, 2025", pl: "Na planie — Metropolis, 2025" } },
-  { src: "assets/img/photo-2.jpg", caption: { en: "Blocking rehearsal", pl: "Próba ustawień" } },
-  { src: "assets/img/photo-3.jpg", caption: { en: "Portrait", pl: "Portret" } },
-  { src: "assets/img/photo-4.jpg", caption: { en: "Baltic coast, 5:40 AM", pl: "Wybrzeże Bałtyku, 5:40" } },
-  { src: "assets/img/photo-5.jpg", caption: { en: "Monitor village", pl: "Przy monitorze" } },
-  { src: "assets/img/photo-6.jpg", caption: { en: "Night exterior", pl: "Noc, plener" } },
-  { src: "assets/img/photo-7.jpg", caption: { en: "Camera test", pl: "Testy kamery" } },
-  { src: "assets/img/photo-8.jpg", caption: { en: "Wrap", pl: "Koniec zdjęć" } },
-];
-
-/* -------------------------------------------------------------------------
    ПЕРЕВОДЫ ИНТЕРФЕЙСА — меняй тексты здесь
    ------------------------------------------------------------------------- */
 
@@ -237,7 +220,6 @@ const I18N = {
   en: {
     "nav.work": "Work",
     "nav.approach": "Approach",
-    "nav.frames": "Frames",
     "nav.contact": "Contact",
 
     "hero.eyebrow": "Film direction for brands and artists.",
@@ -262,11 +244,7 @@ const I18N = {
     "approach.principles": "Principles",
     "approach.facts": "Details",
 
-    "frames.label": "03 — Frames",
-    "frames.title": "Portraits & backstage",
-    "frames.note": "Stills from set, tests and life between takes.",
-
-    "contact.label": "04 — Contact",
+    "contact.label": "03 — Contact",
     "contact.title": "Let's make something",
     "contact.lede":
       "Treatments, availability, rates — write to me directly. I reply to everything within two days.",
@@ -286,7 +264,6 @@ const I18N = {
   pl: {
     "nav.work": "Prace",
     "nav.approach": "Podejście",
-    "nav.frames": "Kadry",
     "nav.contact": "Kontakt",
 
     "hero.eyebrow": "Reżyseria filmowa dla marek i artystów.",
@@ -311,11 +288,7 @@ const I18N = {
     "approach.principles": "Zasady",
     "approach.facts": "Szczegóły",
 
-    "frames.label": "03 — Kadry",
-    "frames.title": "Portrety i backstage",
-    "frames.note": "Zdjęcia z planu, testów i życia między ujęciami.",
-
-    "contact.label": "04 — Kontakt",
+    "contact.label": "03 — Kontakt",
     "contact.title": "Zróbmy coś razem",
     "contact.lede":
       "Treatmenty, dostępność, stawki — pisz bezpośrednio. Odpowiadam na wszystko w ciągu dwóch dni.",
