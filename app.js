@@ -35,7 +35,7 @@
   const L = (v) => (v && typeof v === "object" ? (v[lang] != null ? v[lang] : v.en) : v) || "";
 
   /* ---------------------------------------------------------------- state */
-  let sortDesc = true;      // true — сначала новые
+  let sortDesc = true;      // true — как в content.js, false — наоборот
   let openId = null;        // раскрытая строка
 
   /* --------------------------------------------------------------- static */
@@ -80,12 +80,11 @@
   }
 
   /* ----------------------------------------------------------------- work */
+  // Порядок в таблице = порядок массива PROJECTS в content.js.
+  // Кнопка сортировки просто переворачивает список.
   function sorted() {
-    return PROJECTS.map((p, i) => ({ p, i })).sort((a, b) => {
-      const d = Number(b.p.year || 0) - Number(a.p.year || 0);
-      const r = d !== 0 ? d : a.i - b.i;
-      return sortDesc ? r : -r;
-    });
+    const list = PROJECTS.map((p, i) => ({ p, i }));
+    return sortDesc ? list : list.reverse();
   }
 
   function renderWork() {
@@ -129,7 +128,14 @@
         img.alt = p.title;
         img.loading = "lazy";
         img.decoding = "async";
-        img.onerror = () => img.remove();
+        // у части роликов нет maxresdefault — тихо падаем на hqdefault
+        img.onerror = () => {
+          if (img.src.indexOf("/maxresdefault.jpg") > -1) {
+            img.src = img.src.replace("/maxresdefault.jpg", "/hqdefault.jpg");
+            return;
+          }
+          img.remove();
+        };
         still.appendChild(img);
       }
       inner.appendChild(still);

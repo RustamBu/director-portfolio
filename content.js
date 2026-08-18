@@ -32,6 +32,7 @@ const SITE = {
 /* -------------------------------------------------------------------------
    РАБОТЫ / WORK
    Каждая строка в таблице раскрывается по клику.
+   ПОРЯДОК В ТАБЛИЦЕ = порядок в этом массиве (сверху вниз).
 
    format — то, что стоит в колонке FORMAT
    video  — { kind: "youtube", id: "..." } | { kind: "mp4", src: "..." } | null
@@ -41,94 +42,87 @@ const SITE = {
 
 const PROJECTS = [
   {
-    title: "Metropolis",
+    title: "Nnaia",
     year: "2025",
-    format: { en: "Commercial · 60″", pl: "Reklama · 60″" },
-    poster: "assets/img/work-1.jpg",
-    video: { kind: "youtube", id: "dQw4w9WgXcQ" },
-    description: {
-      en: "A night-run through a city that never resolves. Handheld, anamorphic, lit almost entirely by practicals.",
-      pl: "Nocny bieg przez miasto, które nigdy się nie domyka. Z ręki, anamorf, światło niemal wyłącznie praktyczne.",
-    },
-    credits: [
-      { k: { en: "DOP", pl: "Operator" }, v: "Name Surname" },
-      { k: { en: "Format", pl: "Format" }, v: { en: "35mm anamorphic", pl: "35mm anamorf" } },
-    ],
-  },
-  {
-    title: "Blue Hour",
-    year: "2025",
-    format: { en: "Short Film · 12′", pl: "Krótki metraż · 12′" },
-    poster: "assets/img/work-2.jpg",
-    video: { kind: "youtube", id: "dQw4w9WgXcQ" },
-    description: {
-      en: "Twelve minutes in the last light of a day that will not come back.",
-      pl: "Dwanaście minut w ostatnim świetle dnia, który już nie wróci.",
-    },
-    credits: [
-      { k: { en: "DOP", pl: "Operator" }, v: "Name Surname" },
-      { k: { en: "Format", pl: "Format" }, v: { en: "Super 16", pl: "Super 16" } },
-    ],
-  },
-  {
-    title: "Static",
-    year: "2024",
     format: { en: "Music Video", pl: "Teledysk" },
-    poster: "assets/img/work-3.jpg",
-    video: { kind: "youtube", id: "dQw4w9WgXcQ" },
-    description: {
-      en: "One take, one room, one slowly failing television set.",
-      pl: "Jedno ujęcie, jeden pokój, jeden powoli gasnący telewizor.",
-    },
-    credits: [
-      { k: { en: "DOP", pl: "Operator" }, v: "Name Surname" },
-      { k: { en: "Format", pl: "Format" }, v: { en: "Single take", pl: "Jedno ujęcie" } },
-    ],
+    poster: "https://i.ytimg.com/vi/GwTPkAQkCBA/maxresdefault.jpg",
+    video: { kind: "youtube", id: "GwTPkAQkCBA" },
+    description: null,
+    credits: [],
   },
   {
-    title: "Salt",
+    title: "Memories (part 2)",
+    year: "2025",
+    format: { en: "Commercial", pl: "Reklama" },
+    poster: "https://i.ytimg.com/vi/gkG1SKikLnE/maxresdefault.jpg",
+    video: { kind: "youtube", id: "gkG1SKikLnE" },
+    description: null,
+    credits: [],
+  },
+  {
+    title: "Memories (part 1)",
+    year: "2025",
+    format: { en: "Commercial", pl: "Reklama" },
+    poster: "https://i.ytimg.com/vi/s_4gUKdj3xk/maxresdefault.jpg",
+    video: { kind: "youtube", id: "s_4gUKdj3xk" },
+    description: null,
+    credits: [],
+  },
+  {
+    // Ссылка появится позже — пока строка показывает «Coming soon».
+    // Как будет ссылка: video: { kind: "youtube", id: "ID_ИЗ_ССЫЛКИ" }
+    title: "Run with Me",
+    year: "2025",
+    format: { en: "Music Video", pl: "Teledysk" },
+    poster: null,
+    video: null,
+    description: null,
+    credits: [],
+  },
+  {
+    title: "Wrong Leg",
+    year: "2025",
+    format: { en: "Music Video", pl: "Teledysk" },
+    poster: "https://i.ytimg.com/vi/Mahfb3rby_w/maxresdefault.jpg",
+    video: { kind: "youtube", id: "Mahfb3rby_w" },
+    description: null,
+    credits: [],
+  },
+  {
+    title: "Bizhu do Tebe",
     year: "2024",
-    format: { en: "Fashion Film", pl: "Film modowy" },
-    poster: "assets/img/work-4.jpg",
-    video: { kind: "youtube", id: "dQw4w9WgXcQ" },
-    description: {
-      en: "Bodies and weather. Shot on the Baltic coast over two grey mornings.",
-      pl: "Ciała i pogoda. Nakręcone na wybrzeżu Bałtyku przez dwa szare poranki.",
-    },
-    credits: [
-      { k: { en: "DOP", pl: "Operator" }, v: "Name Surname" },
-      { k: { en: "Location", pl: "Lokacja" }, v: { en: "Baltic coast", pl: "Wybrzeże Bałtyku" } },
-    ],
+    format: { en: "Commercial", pl: "Reklama" },
+    poster: "https://i.ytimg.com/vi/TprChxO_TM4/maxresdefault.jpg",
+    video: { kind: "youtube", id: "TprChxO_TM4" },
+    description: null,
+    credits: [],
   },
   {
-    title: "Rehearsal",
-    year: "2023",
-    format: { en: "Documentary · 22′", pl: "Dokument · 22′" },
-    poster: "assets/img/work-5.jpg",
-    video: { kind: "youtube", id: "dQw4w9WgXcQ" },
-    description: {
-      en: "Three weeks with a company that only exists between six and ten in the evening.",
-      pl: "Trzy tygodnie z zespołem, który istnieje tylko między szóstą a dziesiątą wieczorem.",
-    },
-    credits: [
-      { k: { en: "DOP", pl: "Operator" }, v: "Name Surname" },
-      { k: { en: "Format", pl: "Format" }, v: { en: "Handheld digital", pl: "Cyfra z ręki" } },
-    ],
+    title: "Chimera",
+    year: "2025",
+    format: { en: "Experimental Short Film", pl: "Eksperymentalny krótki metraż" },
+    poster: "https://i.ytimg.com/vi/Qd4sXnxq_7s/maxresdefault.jpg",
+    video: { kind: "youtube", id: "Qd4sXnxq_7s" },
+    description: null,
+    credits: [],
   },
   {
-    title: "Nightshift",
-    year: "2023",
-    format: { en: "Branded · 3×30″", pl: "Branded · 3×30″" },
-    poster: "assets/img/work-6.jpg",
-    video: { kind: "youtube", id: "dQw4w9WgXcQ" },
-    description: {
-      en: "Portraits of people who work while the city sleeps.",
-      pl: "Portrety ludzi, którzy pracują, gdy miasto śpi.",
-    },
-    credits: [
-      { k: { en: "DOP", pl: "Operator" }, v: "Name Surname" },
-      { k: { en: "Format", pl: "Format" }, v: { en: "Three films", pl: "Trzy filmy" } },
-    ],
+    title: "Solfi",
+    year: "2024",
+    format: { en: "Commercial", pl: "Reklama" },
+    poster: "https://i.ytimg.com/vi/ynHzAmfBHU0/maxresdefault.jpg",
+    video: { kind: "youtube", id: "ynHzAmfBHU0" },
+    description: null,
+    credits: [],
+  },
+  {
+    title: "The Choice",
+    year: "2024",
+    format: { en: "Experimental Short Film", pl: "Eksperymentalny krótki metraż" },
+    poster: "https://i.ytimg.com/vi/TihlObaQ7WE/maxresdefault.jpg",
+    video: { kind: "youtube", id: "TihlObaQ7WE" },
+    description: null,
+    credits: [],
   },
 ];
 
@@ -172,7 +166,7 @@ const I18N = {
 
     "work.label": "Work",
     "work.projects": "projects",
-    "work.sort": "By year",
+    "work.sort": "Order",
     "work.col.n": "№",
     "work.col.title": "Title",
     "work.col.format": "Format",
@@ -203,7 +197,7 @@ const I18N = {
 
     "work.label": "Prace",
     "work.projects": "projekty",
-    "work.sort": "Wg roku",
+    "work.sort": "Kolejność",
     "work.col.n": "№",
     "work.col.title": "Tytuł",
     "work.col.format": "Format",
