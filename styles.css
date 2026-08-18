@@ -214,20 +214,29 @@ ul, ol { list-style: none; }
 
 .reel__media,
 .reel__media img,
-.reel__media video {
+.reel__media video,
+.reel__media iframe {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
+  border: 0;
 }
 
+/* Пока шоурил не запустился, постер лежит под затемнением — по нему читается
+   подпись. Как только пошло видео, затемнение почти снимается. */
 .reel__media::after {
   content: "";
   position: absolute;
   inset: 0;
+  z-index: 1;
+  pointer-events: none;
   background: linear-gradient(180deg, rgba(6, 10, 15, .35), rgba(6, 10, 15, .55));
+  transition: opacity .8s var(--ease);
 }
+.reel__stage.is-live .reel__media::after { opacity: .45; }
+.reel__stage.is-embed .reel__media::after { opacity: 0; }
 
 .reel__stage::after {
   content: "";
@@ -235,8 +244,31 @@ ul, ol { list-style: none; }
   inset: 0;
   background: rgba(6, 10, 15, 0);
   transition: background .5s var(--ease);
+  pointer-events: none;
 }
 .reel__stage:hover::after { background: rgba(6, 10, 15, .12); }
+
+/* Прозрачная кнопка поверх кадра: клик открывает шоурил со звуком. */
+.reel__open {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  display: block;
+  width: 100%;
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  color: inherit;
+}
+
+/* У плеера Drive свои кнопки — оставляем их кликабельными, а нашей кнопке
+   отдаём только нижнюю плашку. */
+.reel__stage.is-embed .reel__open {
+  inset: auto 0 0 0;
+  height: 64px;
+}
+.reel__stage.is-embed .reel__btn { display: none; }
 
 .reel__btn {
   position: absolute;
@@ -254,6 +286,10 @@ ul, ol { list-style: none; }
 }
 .reel__stage:hover .reel__btn svg { transform: scale(1.08); opacity: 1; }
 
+/* Видео уже идёт — большая «плей» не нужна, показываем её только на наведении. */
+.reel__stage.is-video .reel__btn svg { opacity: 0; }
+.reel__stage.is-video:hover .reel__btn svg { opacity: .9; }
+
 .reel__bar {
   position: absolute;
   z-index: 2;
@@ -262,6 +298,12 @@ ul, ol { list-style: none; }
   justify-content: flex-end;
   padding: 14px clamp(14px, 2vw, 22px);
   color: var(--ink-2);
+}
+
+/* Кадр из видео может оказаться светлым — подкладываем под подпись тень. */
+.reel__stage.is-live .reel__bar {
+  background: linear-gradient(180deg, rgba(6, 10, 15, 0), rgba(6, 10, 15, .55));
+  color: var(--ink);
 }
 
 /* ---------------------------------------------------------------- section */

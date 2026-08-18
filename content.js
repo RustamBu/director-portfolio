@@ -27,11 +27,22 @@ const SITE = {
   ],
 
   // Шоурил на первом экране.
-  // video: { kind: "youtube", id: "ID_ИЗ_ССЫЛКИ" } | { kind: "mp4", src: "assets/video/reel.mp4" }
+  // video: { kind: "youtube", id: "ID_ИЗ_ССЫЛКИ" }
+  //      | { kind: "drive",   id: "ID_ИЗ_ССЫЛКИ Google Drive" }
+  //      | { kind: "mp4",     src: "assets/video/reel.mp4" }
+  //
+  // autoplay: true — шоурил сам стартует на первом экране, без звука и по кругу.
+  //   Клик по нему открывает большое окно со звуком.
+  //   Браузеры разрешают автозапуск только без звука — это нормально и ожидаемо.
+  //   Если включён «уменьшить движение» в системе, автозапуска не будет.
+  //
+  // Самый надёжный автозапуск даёт свой файл: положи mp4 в assets/video/reel.mp4
+  // и поставь video: { kind: "mp4", src: "assets/video/reel.mp4" }.
   reel: {
     year: "2026",
     poster: "assets/img/hero.jpg",
-    video: { kind: "youtube", id: "dQw4w9WgXcQ" },
+    autoplay: true,
+    video: { kind: "drive", id: "1IxMoQGmlDyQVdK9b7RhzEgN6c8Q0j5g9" },
   },
 };
 
@@ -174,6 +185,7 @@ const I18N = {
 
     "reel.label": "Showreel",
     "reel.play": "Play",
+    "reel.sound": "Sound on",
 
     "work.label": "Work",
     "work.projects": "projects",
@@ -206,6 +218,7 @@ const I18N = {
 
     "reel.label": "Showreel",
     "reel.play": "Odtwórz",
+    "reel.sound": "Włącz dźwięk",
 
     "work.label": "Prace",
     "work.projects": "projekty",

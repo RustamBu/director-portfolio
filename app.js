@@ -57,7 +57,127 @@
       i.onerror = () => i.remove();
       box.appendChild(i);
     }
-    if (!reel.video) $("#reel").hidden = true;
+    if (!reel.video) { $("#reel").hidden = true; return; }
+
+    autoplayReel(reel);
+  }
+
+  /* ------------------------------------------------------------ reel auto */
+  // Шоурил на первом экране стартует сам: без звука, по кругу, поверх постера.
+  // Звук — по клику: открывается большое окно (см. openReel).
+  // Автозапуск со звуком браузеры запрещают, поэтому он и не пытается.
+  let reelIsLive = false;
+
+  const reducedMotion = () => {
+    try { return matchMedia("(prefers-reduced-motion: reduce)").matches; }
+    catch (e) { return false; }
+  };
+
+  // Прямой поток файла с Google Drive — им можно кормить <video>.
+  const driveStream  = (id) =>
+    "https://drive.usercontent.google.com/download?export=download&id=" + encodeURIComponent(id);
+  // Штатный плеер Google Drive — запасной вариант, если поток не отдался.
+  const drivePreview = (id, autoplay) =>
+    "https://drive.google.com/file/d/" + encodeURIComponent(id) + "/preview" +
+    (autoplay ? "?autoplay=1&mute=1" : "");
+
+  function reelSrc(v) {
+    if (!v) return "";
+    if (v.kind === "mp4" && v.src) return v.src;
+    if (v.kind === "drive" && v.id) return driveStream(v.id);
+    return "";
+  }
+
+  function markReelLive(mode, playing) {
+    reelIsLive = !!playing;
+    $("#reelStage").classList.add("is-live", mode);
+    syncReelCta();
+  }
+
+  // Подпись на плашке зависит от того, играет ли шоурил прямо сейчас.
+  function syncReelCta() {
+    const cta = $("#reelCta");
+    if (!cta) return;
+    const key = reelIsLive ? "reel.sound" : "reel.play";
+    cta.dataset.i18n = key;
+    cta.textContent = t(key);
+    $("#reelPlay").setAttribute("aria-label", t(key) + " — " + t("reel.label"));
+  }
+
+  function autoplayReel(reel) {
+    if (reel.autoplay === false || reducedMotion()) return;
+
+    const v = reel.video || {};
+    // YouTube-шоурил крутим его же плеером — свой <video> тут не поможет.
+    if (v.kind === "youtube" && v.id) return embedReel(reel, true);
+
+    const src = reelSrc(v);
+    if (!src) return;
+
+    const box = $("#reelMedia");
+    const vid = el("video");
+    vid.src = src;
+    vid.muted = true;
+    vid.defaultMuted = true;
+    vid.autoplay = true;
+    vid.loop = true;
+    vid.preload = "auto";
+    vid.playsInline = true;
+    vid.setAttribute("muted", "");
+    vid.setAttribute("playsinline", "");
+    vid.setAttribute("webkit-playsinline", "");
+    if (reel.poster) vid.poster = reel.poster;
+    vid.tabIndex = -1;
+    vid.setAttribute("aria-hidden", "true");
+
+    let settled = false;
+    const give = () => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timer);
+      vid.remove();
+      // Drive иногда не отдаёт файл потоком (крупный файл, антивирусная
+      // заглушка) — тогда показываем его штатный плеер.
+      if (v.kind === "drive" && v.id) embedReel(reel, true);
+    };
+    const win = () => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timer);
+      markReelLive("is-video", true);
+    };
+
+    vid.addEventListener("playing", win);
+    vid.addEventListener("error", give);
+    // Ждём реального кадра: пустой <video> висеть на первом экране не должен.
+    const timer = setTimeout(() => { if (!vid.currentTime) give(); }, 6000);
+
+    box.appendChild(vid);
+    const p = vid.play();
+    if (p && p.catch) p.catch(give);
+  }
+
+  // Плеер в рамке (YouTube / Google Drive) прямо на первом экране.
+  function embedReel(reel, autoplay) {
+    const v = reel.video || {};
+    let src = "";
+    if (v.kind === "youtube" && v.id) {
+      src = "https://www.youtube-nocookie.com/embed/" + encodeURIComponent(v.id) +
+            "?rel=0&modestbranding=1&playsinline=1&controls=0&loop=1&playlist=" +
+            encodeURIComponent(v.id) + (autoplay ? "&autoplay=1&mute=1" : "");
+    } else if (v.kind === "drive" && v.id) {
+      src = drivePreview(v.id, autoplay);
+    }
+    if (!src) return;
+
+    const f = el("iframe");
+    f.src = src;
+    f.allow = "autoplay; encrypted-media; picture-in-picture";
+    f.setAttribute("frameborder", "0");
+    f.title = "Showreel";
+    $("#reelMedia").appendChild(f);
+    // Свой плеер Drive автозапуск не гарантирует — не обещаем звук на плашке.
+    markReelLive("is-embed", v.kind === "youtube" && !!autoplay);
   }
 
   /* ----------------------------------------------------------------- lang */
@@ -67,6 +187,7 @@
     try { localStorage.setItem("lang", lang); } catch (e) {}
 
     $$("[data-i18n]").forEach((n) => { n.textContent = t(n.dataset.i18n); });
+    syncReelCta();
     $$("[data-setlang]").forEach((b) => b.classList.toggle("is-active", b.dataset.setlang === lang));
 
     $("#footCity").textContent = L(SITE.city);
@@ -231,12 +352,21 @@
       f.allowFullscreen = true;
       f.title = title || "Video";
       stage.appendChild(f);
+    } else if (v && v.kind === "drive" && v.id) {
+      const f = el("iframe");
+      f.src = drivePreview(v.id, true);
+      f.allow = "autoplay; encrypted-media; picture-in-picture";
+      f.allowFullscreen = true;
+      f.setAttribute("frameborder", "0");
+      f.title = title || "Video";
+      stage.appendChild(f);
     } else if (v && v.kind === "mp4" && v.src) {
       const vid = el("video");
       vid.src = v.src;
       vid.controls = true;
       vid.autoplay = true;
       vid.playsInline = true;
+      vid.preload = "auto";
       vid.setAttribute("playsinline", "");
       if (poster) vid.poster = poster;
       stage.appendChild(vid);
@@ -245,9 +375,14 @@
     }
   }
 
+  // Пока открыто окно, фоновый шоурил стоит на паузе — незачем тянуть два потока.
+  function inlineReel() { return $("#reelMedia video"); }
+
   function showModal() {
     modal.hidden = false;
     document.body.classList.add("is-locked");
+    const bg = inlineReel();
+    if (bg) bg.pause();
     $("#modalClose").focus();
   }
 
@@ -266,7 +401,13 @@
   function openReel() {
     lastFocus = document.activeElement;
     const reel = SITE.reel || {};
-    mountVideo(reel.video, reel.poster, "Showreel");
+    let v = reel.video;
+    // Если прямой поток уже играет на первом экране — в окне включаем его же:
+    // со звуком, перемоткой и полноэкранным режимом. Плеер Drive тут не нужен.
+    if (v && v.kind === "drive" && $("#reelStage").classList.contains("is-video")) {
+      v = { kind: "mp4", src: driveStream(v.id) };
+    }
+    mountVideo(v, reel.poster, "Showreel");
     $("#modalMeta").innerHTML =
       '<div><h3>' + esc(t("reel.label")) + " " + esc(reel.year || "") + "</h3></div>";
     showModal();
@@ -276,6 +417,8 @@
     modal.hidden = true;
     stage.innerHTML = "";
     document.body.classList.remove("is-locked");
+    const bg = inlineReel();
+    if (bg) { const p = bg.play(); if (p && p.catch) p.catch(() => {}); }
     if (lastFocus) lastFocus.focus();
   }
 
