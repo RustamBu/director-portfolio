@@ -222,6 +222,29 @@ ul, ol { list-style: none; }
   object-fit: cover;
 }
 
+.reel__media iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+/* Прозрачная кнопка поверх шоурила: он играет сам, клик открывает со звуком. */
+.reel__open {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: block;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  cursor: pointer;
+}
+
 .reel__media::after {
   content: "";
   position: absolute;

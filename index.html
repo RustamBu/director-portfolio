@@ -111,15 +111,17 @@
         <span class="mono muted"><span data-i18n="reel.label"></span> <span id="reelYear"></span></span>
       </div>
 
-      <button class="reel__stage" type="button" id="reelPlay" aria-label="Play showreel">
+      <div class="reel__stage">
         <span class="reel__media" id="reelMedia"></span>
-        <span class="reel__btn" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="11.25" stroke="currentColor" stroke-width="1"/><path d="M10 8.5 16 12l-6 3.5z" fill="currentColor"/></svg>
-        </span>
-        <span class="reel__bar">
-          <span class="mono" data-i18n="reel.play"></span>
-        </span>
-      </button>
+        <button class="reel__open" type="button" id="reelPlay" aria-label="Play showreel with sound">
+          <span class="reel__btn" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="11.25" stroke="currentColor" stroke-width="1"/><path d="M10 8.5 16 12l-6 3.5z" fill="currentColor"/></svg>
+          </span>
+          <span class="reel__bar">
+            <span class="mono" data-i18n="reel.play"></span>
+          </span>
+        </button>
+      </div>
     </div>
   </section>
 

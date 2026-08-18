@@ -27,11 +27,17 @@ const SITE = {
   ],
 
   // Шоурил на первом экране.
-  // video: { kind: "youtube", id: "ID_ИЗ_ССЫЛКИ" } | { kind: "mp4", src: "assets/video/reel.mp4" }
+  // video: { kind: "youtube", id: "ID_ИЗ_ССЫЛКИ" }
+  //      | { kind: "drive",   id: "ID_ИЗ_ССЫЛКИ_GOOGLE_DRIVE" }
+  //      | { kind: "mp4",     src: "assets/video/reel.mp4" }
+  // autoplay: true — шоурил сам стартует на первом экране (без звука, по кругу),
+  //           клик по нему открывает большое окно со звуком.
+  //           Для kind: "youtube" автостарт не работает — нужен drive или mp4.
   reel: {
     year: "2026",
     poster: "assets/img/hero.jpg",
-    video: { kind: "youtube", id: "dQw4w9WgXcQ" },
+    video: { kind: "drive", id: "1IxMoQGmlDyQVdK9b7RhzEgN6c8Q0j5g9" },
+    autoplay: true,
   },
 };
 
@@ -173,7 +179,7 @@ const I18N = {
     "hero.title.2": "Warsaw and Europe.",
 
     "reel.label": "Showreel",
-    "reel.play": "Play",
+    "reel.play": "Play with sound",
 
     "work.label": "Work",
     "work.projects": "projects",
@@ -205,7 +211,7 @@ const I18N = {
     "hero.title.2": "Warszawa i Europa.",
 
     "reel.label": "Showreel",
-    "reel.play": "Odtwórz",
+    "reel.play": "Odtwórz z dźwiękiem",
 
     "work.label": "Prace",
     "work.projects": "projekty",
