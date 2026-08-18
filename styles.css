@@ -202,11 +202,17 @@ ul, ol { list-style: none; }
   padding-bottom: 12px;
 }
 
+/* Пропорции задаёт content.js (SITE.reel.ratio): --reel-ar для рамки,
+   --reel-arn тем же числом — оно не даёт блоку вырасти выше экрана. */
+.reel {
+  width: min(100%, calc(72vh * var(--reel-arn, 2.4)));
+}
+
 .reel__stage {
   position: relative;
   display: block;
   width: 100%;
-  aspect-ratio: 12 / 5;
+  aspect-ratio: var(--reel-ar, 12 / 5);
   overflow: hidden;
   background: var(--bg-3);
   border: 1px solid var(--line-soft);
@@ -708,7 +714,7 @@ ul, ol { list-style: none; }
   .nav__links.is-open ~ .nav__burger i:first-child { transform: translateY(3px) rotate(45deg); }
   .nav__links.is-open ~ .nav__burger i:last-child  { transform: translateY(-3px) rotate(-45deg); }
 
-  .reel__stage { aspect-ratio: 16 / 10; }
+  .reel__stage { aspect-ratio: var(--reel-ar, 16 / 10); }
   .reel__btn svg { width: 42px; height: 42px; }
 
   .about { grid-template-columns: 1fr; }

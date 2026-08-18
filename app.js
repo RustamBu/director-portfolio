@@ -47,6 +47,14 @@
     const reel = SITE.reel || {};
     $("#reelYear").textContent = reel.year || "";
 
+    const reelEl = $("#reel");
+    if (reelEl && reel.ratio) {
+      const [w, h] = String(reel.ratio).split("/");
+      const n = parseFloat(w) / parseFloat(h || 1);
+      reelEl.style.setProperty("--reel-ar", reel.ratio);
+      if (isFinite(n) && n > 0) reelEl.style.setProperty("--reel-arn", String(n));
+    }
+
     const box = $("#reelMedia");
     box.innerHTML = "";
     if (reel.poster) {
