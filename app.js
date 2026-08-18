@@ -122,20 +122,42 @@
       const inner = el("div", "row__inner");
 
       const still = el("div", "row__still");
-      if (p.poster) {
-        const img = el("img");
-        img.src = p.poster;
+      if (p.cover || p.poster) {
+        // вертикальная обложка 4:5 показывается целиком, фон — она же в размытии
+        const useCover = Boolean(p.cover);
+        if (useCover) still.classList.add("row__still--cover");
+
+        const bg = el("img", "row__still-bg");
+        bg.alt = "";
+        bg.setAttribute("aria-hidden", "true");
+        bg.loading = "lazy";
+        bg.decoding = "async";
+        bg.onerror = () => bg.remove();
+
+        const img = el("img", "row__still-img");
         img.alt = p.title;
         img.loading = "lazy";
         img.decoding = "async";
-        // у части роликов нет maxresdefault — тихо падаем на hqdefault
+        // 1) нет обложки — падаем на poster; 2) нет maxresdefault — на hqdefault
         img.onerror = () => {
+          if (useCover && img.dataset.stage !== "poster" && p.poster) {
+            img.dataset.stage = "poster";
+            still.classList.remove("row__still--cover");
+            img.src = p.poster;
+            bg.remove();
+            return;
+          }
           if (img.src.indexOf("/maxresdefault.jpg") > -1) {
             img.src = img.src.replace("/maxresdefault.jpg", "/hqdefault.jpg");
             return;
           }
           img.remove();
+          bg.remove();
         };
+
+        const src = p.cover || p.poster;
+        if (useCover) { bg.src = src; still.appendChild(bg); }
+        img.src = src;
         still.appendChild(img);
       }
       inner.appendChild(still);

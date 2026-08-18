@@ -384,6 +384,23 @@ ul, ol { list-style: none; }
 }
 .row:hover .row__still img { transform: scale(1.02); }
 
+/* вертикальная обложка 4:5 — целиком, на размытом фоне из неё же */
+.row__still--cover { aspect-ratio: 16 / 9; }
+.row__still--cover .row__still-img {
+  position: relative;
+  z-index: 1;
+  object-fit: contain;
+}
+.row__still-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  filter: blur(28px) saturate(.8);
+  transform: scale(1.15);
+  opacity: .5;
+}
+.row:hover .row__still-bg { transform: scale(1.15); }
+
 .row__side {
   display: flex;
   flex-direction: column;
@@ -638,6 +655,9 @@ ul, ol { list-style: none; }
   .row__format { display: none; }
 
   .row__inner { grid-template-columns: 1fr; }
+  .row__still--cover { aspect-ratio: 4 / 5; }
+  .row__still--cover .row__still-img { object-fit: cover; }
+  .row__still--cover .row__still-bg { display: none; }
 }
 
 @media (max-width: 760px) {

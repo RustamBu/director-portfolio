@@ -42,7 +42,9 @@ const SITE = {
 
    format — то, что стоит в колонке FORMAT
    video  — { kind: "youtube", id: "..." } | { kind: "mp4", src: "..." } | null
-   poster — кадр 16:9 из assets/img/
+   poster — кадр 16:9 (или превью с YouTube)
+   cover  — вертикальная обложка 4:5 из assets/img/covers/ (необязательно).
+            Если файла нет — тихо показывается poster.
    credits — произвольные строки в раскрытой карточке
    ------------------------------------------------------------------------- */
 
@@ -52,6 +54,7 @@ const PROJECTS = [
     year: "2025",
     format: { en: "Music Video", pl: "Teledysk" },
     poster: "https://i.ytimg.com/vi/GwTPkAQkCBA/maxresdefault.jpg",
+    cover: "assets/img/covers/nnaia.jpg",
     video: { kind: "youtube", id: "GwTPkAQkCBA" },
     description: null,
     credits: [],
@@ -70,6 +73,7 @@ const PROJECTS = [
     year: "2025",
     format: { en: "Commercial", pl: "Reklama" },
     poster: "https://i.ytimg.com/vi/s_4gUKdj3xk/maxresdefault.jpg",
+    cover: "assets/img/covers/memories-part-1.jpg",
     video: { kind: "youtube", id: "s_4gUKdj3xk" },
     description: null,
     credits: [],
@@ -78,8 +82,8 @@ const PROJECTS = [
     title: "Run with Me",
     year: "2025",
     format: { en: "Music Video", pl: "Teledysk" },
-    poster: "https://i.ytimg.com/vi/GwTPkAQkCBA/maxresdefault.jpg",
-    video: { kind: "youtube", id: "GwTPkAQkCBA" },
+    poster: "https://i.ytimg.com/vi/2ikUAzTHwNU/maxresdefault.jpg",
+    video: { kind: "youtube", id: "2ikUAzTHwNU" },
     description: null,
     credits: [],
   },
@@ -88,6 +92,7 @@ const PROJECTS = [
     year: "2025",
     format: { en: "Music Video", pl: "Teledysk" },
     poster: "https://i.ytimg.com/vi/Mahfb3rby_w/maxresdefault.jpg",
+    cover: "assets/img/covers/wrong-leg.jpg",
     video: { kind: "youtube", id: "Mahfb3rby_w" },
     description: null,
     credits: [],
@@ -106,6 +111,7 @@ const PROJECTS = [
     year: "2025",
     format: { en: "Experimental Short Film", pl: "Eksperymentalny krótki metraż" },
     poster: "https://i.ytimg.com/vi/Qd4sXnxq_7s/maxresdefault.jpg",
+    cover: "assets/img/covers/chimera.jpg",
     video: { kind: "youtube", id: "Qd4sXnxq_7s" },
     description: null,
     credits: [],
@@ -124,6 +130,7 @@ const PROJECTS = [
     year: "2024",
     format: { en: "Experimental Short Film", pl: "Eksperymentalny krótki metraż" },
     poster: "https://i.ytimg.com/vi/TihlObaQ7WE/maxresdefault.jpg",
+    cover: "assets/img/covers/the-choice.jpg",
     video: { kind: "youtube", id: "TihlObaQ7WE" },
     description: null,
     credits: [],
