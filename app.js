@@ -22,7 +22,6 @@
   /* ----------------------------------------------------------------- lang */
   const LANGS = ["en", "pl"];
   let lang = (function () {
-    // ?lang=pl — можно давать прямую ссылку на нужную версию
     const q = (location.search.match(/[?&]lang=([a-z]{2})/i) || [])[1];
     if (q && LANGS.includes(q.toLowerCase())) return q.toLowerCase();
     let saved = null;
@@ -33,8 +32,35 @@
   })();
 
   const t = (key) => (I18N[lang] && I18N[lang][key]) || (I18N.en && I18N.en[key]) || "";
-  const L = (obj) => (obj && (obj[lang] != null ? obj[lang] : obj.en)) || "";
+  const L = (v) => (v && typeof v === "object" ? (v[lang] != null ? v[lang] : v.en) : v) || "";
 
+  /* ---------------------------------------------------------------- state */
+  let sortDesc = true;      // true — сначала новые
+  let openId = null;        // раскрытая строка
+
+  /* --------------------------------------------------------------- static */
+  function renderStatic() {
+    $("#brandName").textContent = SITE.name;
+    $("#footName").textContent = SITE.name;
+    $("#footYear").textContent = "© " + new Date().getFullYear();
+
+    const reel = SITE.reel || {};
+    $("#reelYear").textContent = reel.year || "";
+
+    const box = $("#reelMedia");
+    box.innerHTML = "";
+    if (reel.poster) {
+      const i = el("img");
+      i.src = reel.poster;
+      i.alt = "";
+      i.decoding = "async";
+      i.onerror = () => i.remove();
+      box.appendChild(i);
+    }
+    if (!reel.video) $("#reel").hidden = true;
+  }
+
+  /* ----------------------------------------------------------------- lang */
   function applyLang() {
     document.documentElement.lang = lang;
     document.documentElement.dataset.lang = lang;
@@ -43,119 +69,102 @@
     $$("[data-i18n]").forEach((n) => { n.textContent = t(n.dataset.i18n); });
     $$("[data-setlang]").forEach((b) => b.classList.toggle("is-active", b.dataset.setlang === lang));
 
+    $("#footCity").textContent = L(SITE.city);
+    $("#workCount").textContent =
+      String(PROJECTS.length).padStart(2, "0") + " " + t("work.projects");
+
     renderWork();
-    renderApproach();
+    renderAbout();
     renderContact();
-    updateClock();
     observeReveals();
   }
 
-  /* ---------------------------------------------------------------- brand */
-  function renderStatic() {
-    $("#brandName").textContent = SITE.name;
-    $("#brandMark").textContent = SITE.mark || "";
-    $("#introName").textContent = SITE.name;
-    $("#footName").textContent = SITE.name;
-    $("#footYear").textContent = "© " + new Date().getFullYear();
-    document.title = SITE.name.replace(/\s+/g, " ") + " — Film Director";
-
-    // hero background
-    const box = $("#heroMedia");
-    const m = SITE.heroMedia || {};
-    box.innerHTML = "";
-    if (m.kind === "video" && m.src) {
-      const v = el("video");
-      v.src = m.src;
-      if (m.poster) v.poster = m.poster;
-      v.autoplay = true; v.muted = true; v.loop = true;
-      v.playsInline = true; v.setAttribute("playsinline", "");
-      box.appendChild(v);
-    } else if (m.src) {
-      const i = el("img");
-      i.src = m.src; i.alt = ""; i.decoding = "async";
-      i.onerror = () => { i.remove(); };
-      box.appendChild(i);
-    }
+  /* ----------------------------------------------------------------- work */
+  function sorted() {
+    return PROJECTS.map((p, i) => ({ p, i })).sort((a, b) => {
+      const d = Number(b.p.year || 0) - Number(a.p.year || 0);
+      const r = d !== 0 ? d : a.i - b.i;
+      return sortDesc ? r : -r;
+    });
   }
 
-  /* ----------------------------------------------------------------- work */
   function renderWork() {
-    const grid = $("#workGrid");
-    grid.innerHTML = "";
+    const list = $("#workList");
+    list.innerHTML = "";
+    $("#sortArrow").textContent = sortDesc ? "↓" : "↑";
 
-    PROJECTS.forEach((p, i) => {
-      const card = el("article", "card reveal" + (p.featured ? " card--featured" : ""));
+    sorted().forEach(({ p, i }, n) => {
       const hasVideo = !!(p.video && (p.video.id || p.video.src));
+      const row = el("article", "row");
+      if (openId === i) row.classList.add("is-open");
 
-      const thumb = el("button", "card__thumb");
-      thumb.type = "button";
-      thumb.setAttribute("aria-label", p.title);
+      /* строка */
+      const line = el("button", "row__line");
+      line.type = "button";
+      line.setAttribute("aria-expanded", String(openId === i));
+      line.innerHTML =
+        '<span class="row__n">' + String(n + 1).padStart(2, "0") + "</span>" +
+        '<span class="row__title">' + esc(p.title) + "</span>" +
+        '<span class="row__format">' + esc(L(p.format)) + "</span>" +
+        '<span class="row__year">' + esc(p.year || "") + "</span>";
+      line.addEventListener("click", () => {
+        openId = openId === i ? null : i;
+        renderWork();
+      });
+      row.appendChild(line);
 
+      /* раскрывающаяся часть */
+      const credits = (p.credits || [])
+        .map((c) => "<div><dt>" + esc(L(c.k)) + "</dt><dd>" + esc(L(c.v)) + "</dd></div>")
+        .join("");
+
+      const panel = el("div", "row__panel");
+      const wrap = el("div");
+      const inner = el("div", "row__inner");
+
+      const still = el("div", "row__still");
       if (p.poster) {
         const img = el("img");
-        img.src = p.poster; img.alt = p.title;
-        img.loading = i > 1 ? "lazy" : "eager";
+        img.src = p.poster;
+        img.alt = p.title;
+        img.loading = "lazy";
         img.decoding = "async";
-        img.onerror = () => { img.style.display = "none"; };
-        thumb.appendChild(img);
+        img.onerror = () => img.remove();
+        still.appendChild(img);
       }
+      inner.appendChild(still);
 
-      if (hasVideo) {
-        thumb.appendChild(
-          el("span", "card__play",
-            '<svg viewBox="0 0 12 14" fill="currentColor"><path d="M12 7 0 14V0z"/></svg>')
-        );
-      } else {
-        thumb.appendChild(el("span", "card__soon", esc(t("work.soon"))));
-      }
+      const side = el("div", "row__side");
+      if (credits) side.appendChild(el("dl", "row__credits", credits));
+      if (L(p.description)) side.appendChild(el("p", "row__desc", esc(L(p.description))));
 
-      thumb.addEventListener("click", () => openModal(p));
-      card.appendChild(thumb);
+      const watch = el("button", "watch mono",
+        (hasVideo ? esc(t("work.watch")) : esc(t("work.soon"))) + " <span aria-hidden='true'>→</span>");
+      watch.type = "button";
+      watch.addEventListener("click", (e) => { e.stopPropagation(); openModal(p); });
+      side.appendChild(watch);
 
-      card.appendChild(
-        el("div", "card__meta",
-          '<div><h3 class="card__title">' + esc(p.title) + "</h3></div>" +
-          '<div class="card__right"><span class="card__type">' + esc(L(p.type)) + "</span>" +
-          (p.year ? '<span class="card__year">' + esc(p.year) + "</span>" : "") +
-          "</div>")
-      );
+      inner.appendChild(side);
+      wrap.appendChild(inner);
+      panel.appendChild(wrap);
+      row.appendChild(panel);
 
-      grid.appendChild(card);
+      list.appendChild(row);
     });
   }
 
-  /* ------------------------------------------------------------- approach */
-  function renderApproach() {
-    const img = $("#approachPortrait");
-    if (APPROACH.portrait) {
-      img.src = APPROACH.portrait;
-      img.alt = SITE.name;
-      img.onerror = () => { img.style.display = "none"; };
-    }
+  /* ---------------------------------------------------------------- about */
+  function renderAbout() {
+    const box = $("#aboutText");
+    box.innerHTML = "";
+    (L(ABOUT.statement) || []).forEach((para) => box.appendChild(el("p", null, esc(para))));
 
-    const st = $("#approachStatement");
-    st.innerHTML = "";
-    (L(APPROACH.statement) || []).forEach((para) => {
-      st.appendChild(el("p", "reveal", esc(para)));
-    });
-
-    const pr = $("#principles");
-    pr.innerHTML = "";
-    (APPROACH.principles || []).forEach((item, i) => {
-      pr.appendChild(
-        el("li", "reveal",
-          '<span class="principles__n">' + String(i + 1).padStart(2, "0") + "</span>" +
-          "<h4>" + esc(L(item.title)) + "</h4>" +
-          "<p>" + esc(L(item.text)) + "</p>")
-      );
-    });
-
-    const fx = $("#facts");
-    fx.innerHTML = "";
-    (APPROACH.facts || []).forEach((f) => {
-      fx.appendChild(
-        el("div", "row reveal",
-          "<dt>" + esc(L(f.k)) + "</dt><dd>" + esc(L(f.v)) + "</dd>")
+    const meta = $("#aboutMeta");
+    meta.innerHTML = "";
+    (ABOUT.meta || []).forEach((m) => {
+      meta.appendChild(
+        el("div", "row-meta reveal",
+          "<dt>" + esc(L(m.k)) + " —</dt><dd>" + esc(L(m.v)) + "</dd>")
       );
     });
   }
@@ -166,89 +175,70 @@
     mail.textContent = SITE.email;
     mail.href = "mailto:" + SITE.email;
 
-    const phoneBlock = $("#phoneBlock");
-    if (SITE.phone) {
-      phoneBlock.hidden = false;
-      const a = $("#contactPhone");
-      a.textContent = SITE.phone;
-      a.href = "tel:" + SITE.phone.replace(/[^\d+]/g, "");
-    } else {
-      phoneBlock.hidden = true;
-    }
-
-    const cv = $("#resumeBtn");
-    if (SITE.resumeUrl) { cv.hidden = false; cv.href = SITE.resumeUrl; cv.target = "_blank"; cv.rel = "noopener"; }
-    else { cv.hidden = true; }
-
     const s = $("#socials");
     s.innerHTML = "";
     (SITE.socials || []).forEach((so) => {
       const li = el("li");
       li.innerHTML =
-        '<a href="' + esc(so.url) + '" target="_blank" rel="noopener">' +
-        esc(so.label) + "<span>" + esc(so.handle || "") + "</span></a>";
+        '<a href="' + esc(so.url) + '" target="_blank" rel="noopener">' + esc(so.label) + "</a>";
       s.appendChild(li);
     });
   }
 
-  /* ---------------------------------------------------------------- clock */
-  function updateClock() {
-    const cityEl = $("#clockCity");
-    if (cityEl) cityEl.textContent = L(SITE.city);
-    const timeEl = $("#clockTime");
-    if (!timeEl) return;
-    try {
-      timeEl.textContent = new Intl.DateTimeFormat(lang === "pl" ? "pl-PL" : "en-GB", {
-        hour: "2-digit", minute: "2-digit", hour12: false, timeZone: SITE.timezone,
-      }).format(new Date());
-    } catch (e) {
-      timeEl.textContent = new Date().toTimeString().slice(0, 5);
-    }
-  }
-
-  /* --------------------------------------------------------------- modal */
+  /* ---------------------------------------------------------------- modal */
   const modal = $("#modal");
   const stage = $("#modalStage");
   let lastFocus = null;
 
-  function openModal(p) {
-    lastFocus = document.activeElement;
+  function mountVideo(v, poster, title) {
     stage.innerHTML = "";
-
-    const v = p.video || {};
-    if (v.kind === "youtube" && v.id) {
+    if (v && v.kind === "youtube" && v.id) {
       const f = el("iframe");
       f.src = "https://www.youtube-nocookie.com/embed/" + encodeURIComponent(v.id) +
               "?autoplay=1&rel=0&modestbranding=1&playsinline=1";
       f.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
       f.allowFullscreen = true;
-      f.title = p.title;
+      f.title = title || "Video";
       stage.appendChild(f);
-    } else if (v.kind === "mp4" && v.src) {
+    } else if (v && v.kind === "mp4" && v.src) {
       const vid = el("video");
-      vid.src = v.src; vid.controls = true; vid.autoplay = true;
-      vid.playsInline = true; vid.setAttribute("playsinline", "");
-      if (p.poster) vid.poster = p.poster;
+      vid.src = v.src;
+      vid.controls = true;
+      vid.autoplay = true;
+      vid.playsInline = true;
+      vid.setAttribute("playsinline", "");
+      if (poster) vid.poster = poster;
       stage.appendChild(vid);
     } else {
       stage.appendChild(el("div", "placeholder", esc(t("work.soon"))));
     }
+  }
 
-    const credits = (p.credits || [])
-      .map((c) => "<span>" + esc(L(c.role)) + " — " + esc(c.name) + "</span>")
-      .join("");
-
-    $("#modalMeta").innerHTML =
-      "<div><h3>" + esc(p.title) + "</h3>" +
-      (L(p.description) ? "<p>" + esc(L(p.description)) + "</p>" : "") +
-      "</div>" +
-      '<div class="side"><span class="micro">' + esc(L(p.type)) + " · " + esc(p.year || "") + "</span>" +
-      (credits ? '<div class="modal__credits">' + credits + "</div>" : "") +
-      "</div>";
-
+  function showModal() {
     modal.hidden = false;
     document.body.classList.add("is-locked");
     $("#modalClose").focus();
+  }
+
+  function openModal(p) {
+    lastFocus = document.activeElement;
+    mountVideo(p.video, p.poster, p.title);
+
+    $("#modalMeta").innerHTML =
+      "<div><h3>" + esc(p.title) + "</h3>" +
+      (L(p.description) ? "<p>" + esc(L(p.description)) + "</p>" : "") + "</div>" +
+      '<div class="side">' + esc(L(p.format)) + (p.year ? " · " + esc(p.year) : "") + "</div>";
+
+    showModal();
+  }
+
+  function openReel() {
+    lastFocus = document.activeElement;
+    const reel = SITE.reel || {};
+    mountVideo(reel.video, reel.poster, "Showreel");
+    $("#modalMeta").innerHTML =
+      '<div><h3>' + esc(t("reel.label")) + " " + esc(reel.year || "") + "</h3></div>";
+    showModal();
   }
 
   function closeModal() {
@@ -258,11 +248,11 @@
     if (lastFocus) lastFocus.focus();
   }
 
+  $("#reelPlay").addEventListener("click", openReel);
   $("#modalClose").addEventListener("click", closeModal);
   $("#modalBackdrop").addEventListener("click", closeModal);
-
   document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape") { if (!modal.hidden) closeModal(); }
+    if (e.key === "Escape" && !modal.hidden) closeModal();
   });
 
   /* --------------------------------------------------------------- reveal */
@@ -275,23 +265,20 @@
     if (!io) {
       io = new IntersectionObserver(
         (entries) => {
-          entries.forEach((entry, i) => {
+          entries.forEach((entry) => {
             if (!entry.isIntersecting) return;
             const n = entry.target;
-            const delay = Number(n.dataset.delay || 0);
-            setTimeout(() => n.classList.add("is-in"), delay);
+            setTimeout(() => n.classList.add("is-in"), Number(n.dataset.delay || 0));
             io.unobserve(n);
           });
         },
-        { rootMargin: "0px 0px -8% 0px", threshold: 0.06 }
+        { rootMargin: "0px 0px -6% 0px", threshold: 0.05 }
       );
     }
-    $$(".reveal:not(.is-in)").forEach((n, i) => {
-      // лёгкая каскадная задержка внутри одного контейнера
+    $$(".reveal:not(.is-in)").forEach((n) => {
       if (!n.dataset.delay) {
         const sibs = Array.from(n.parentElement ? n.parentElement.children : []);
-        const idx = sibs.indexOf(n);
-        n.dataset.delay = String(Math.min(idx, 5) * 70);
+        n.dataset.delay = String(Math.min(sibs.indexOf(n), 5) * 70);
       }
       io.observe(n);
     });
@@ -302,9 +289,7 @@
   const navLinks = $("#navLinks");
   const burger = $("#burger");
 
-  function onScroll() {
-    nav.classList.toggle("is-stuck", window.scrollY > 40);
-  }
+  const onScroll = () => nav.classList.toggle("is-stuck", window.scrollY > 30);
   window.addEventListener("scroll", onScroll, { passive: true });
 
   burger.addEventListener("click", () => {
@@ -313,11 +298,10 @@
     document.body.classList.toggle("is-locked", open);
   });
   navLinks.addEventListener("click", (e) => {
-    if (e.target.tagName === "A") {
-      navLinks.classList.remove("is-open");
-      burger.setAttribute("aria-expanded", "false");
-      document.body.classList.remove("is-locked");
-    }
+    if (e.target.tagName !== "A") return;
+    navLinks.classList.remove("is-open");
+    burger.setAttribute("aria-expanded", "false");
+    document.body.classList.remove("is-locked");
   });
 
   $$("[data-setlang]").forEach((b) =>
@@ -328,39 +312,19 @@
     })
   );
 
-  /* -------------------------------------------------------------- actions */
-  $("#copyEmail").addEventListener("click", async (e) => {
-    const span = e.currentTarget.querySelector("span");
-    try {
-      await navigator.clipboard.writeText(SITE.email);
-      span.textContent = t("contact.copied");
-      setTimeout(() => { span.textContent = t("contact.copy"); }, 1800);
-    } catch (err) {
-      window.location.href = "mailto:" + SITE.email;
-    }
+  $("#sortBtn").addEventListener("click", () => {
+    sortDesc = !sortDesc;
+    renderWork();
   });
 
   /* ----------------------------------------------------------------- boot */
   renderStatic();
   applyLang();
   onScroll();
-  setInterval(updateClock, 15000);
 
   // ?noanim=1 — мгновенно показать всё без анимаций (удобно для скриншотов)
   if (/[?&]noanim/.test(location.search)) {
-    $("#intro").classList.add("is-done");
     $$(".reveal").forEach((n) => n.classList.add("is-in"));
     document.documentElement.style.scrollBehavior = "auto";
-    document.documentElement.classList.add("is-shot");
-    return;
   }
-
-  window.addEventListener("load", () => {
-    setTimeout(() => {
-      $("#intro").classList.add("is-done");
-      observeReveals();
-    }, 900);
-  });
-  // страховка, если load не сработал
-  setTimeout(() => $("#intro").classList.add("is-done"), 3500);
 })();

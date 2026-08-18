@@ -1,7 +1,7 @@
 # Режиссёрское портфолио — статичный сайт
 
-Одностраничник: hero → работы → подход/стиль → контакты.
-Два языка (EN / PL), тёмная винтажная синяя палитра с плёночным зерном.
+Одностраничник: hero с шоурилом → таблица работ → о себе → контакты.
+Два языка (EN / PL), тёмная палитра, моно-подписи, плёночное зерно.
 
 **Без сборки и зависимостей.** Это чистые HTML + CSS + JS. Vercel раздаёт папку как есть,
 деплой занимает секунды, ломаться нечему.
@@ -32,22 +32,23 @@ python3 -m http.server 8000
 ### Имя, город, контакты — блок `SITE`
 
 ```js
-name: "RUSTAM BULATOV",       // имя в шапке
+name: "RUSTAM BULATOV",       // имя в шапке и подвале
 city: { en: "Warsaw", pl: "Warszawa" },
-timezone: "Europe/Warsaw",    // для часов в hero
-email: "...",
-phone: "",                    // пустая строка = блок скрыт
-socials: [ { label, handle, url } ],
-resumeUrl: "",                // пусто = кнопка CV скрыта
+email: "rustambulatov05@gmail.com",
+socials: [ { label: "Instagram", url: "https://instagram.com/" } ],
 ```
 
-### Фон hero
+### Шоурил на первом экране
 
 ```js
-heroMedia: { kind: "image", src: "assets/img/hero.jpg" },
-// или видео-луп на фоне:
-heroMedia: { kind: "video", src: "assets/video/hero-loop.mp4", poster: "assets/img/hero.jpg" },
+reel: {
+  year: "2026",                          // подпись SHOWREEL 2026
+  poster: "assets/img/hero.jpg",         // кадр 12:5, который видно до нажатия
+  video: { kind: "youtube", id: "..." }, // или { kind: "mp4", src: "assets/video/reel.mp4" }
+},
 ```
+
+Убери `video` — блок шоурила пропадёт целиком.
 
 **Как взять ID с YouTube:** из `https://www.youtube.com/watch?v=`**`dQw4w9WgXcQ`** берём то,
 что после `v=`. Из короткой ссылки `https://youtu.be/`**`dQw4w9WgXcQ`** — то, что после слэша.
@@ -61,16 +62,24 @@ heroMedia: { kind: "video", src: "assets/video/hero-loop.mp4", poster: "assets/i
 {
   title: "Metropolis",
   year: "2025",
-  type: { en: "Commercial", pl: "Reklama" },
-  featured: true,                       // true = карточка во всю ширину
-  poster: "assets/img/work-1.jpg",      // превью 16:9
+  format: { en: "Commercial · 60″", pl: "Reklama · 60″" }, // колонка FORMAT
+  poster: "assets/img/work-1.jpg",      // кадр из работы
   video: { kind: "youtube", id: "..." },// или { kind: "mp4", src: "..." }, или null
   description: { en: "...", pl: "..." },
-  credits: [ { role: { en: "DOP", pl: "Operator" }, name: "Имя" } ],
+  credits: [ { k: { en: "DOP", pl: "Operator" }, v: "Имя" } ],
 }
 ```
 
-Ставь `featured: true` только у одной–двух лучших работ, иначе эффект пропадает.
+Каждый блок — одна строка в таблице. Строка раскрывается по клику: кадр, титры,
+описание и кнопка WATCH, которая открывает видео.
+Порядок в таблице — по году; кнопка **BY YEAR** переключает направление.
+
+### О себе — объект `ABOUT`
+
+```js
+statement: { en: ["абзац", "абзац"], pl: [...] },       // текст слева
+meta: [ { k: { en: "Based", ... }, v: { en: "Warsaw", ... } } ],  // строки справа
+```
 
 ### Тексты интерфейса — объект `I18N`
 
@@ -86,9 +95,8 @@ heroMedia: { kind: "video", src: "assets/video/hero-loop.mp4", poster: "assets/i
 
 | Файл | Размер | Что это |
 |---|---|---|
-| `hero.jpg` | 2400×1350 (16:9) | фон первого экрана |
-| `work-1…6.jpg` | 1600×900 (16:9) | превью работ |
-| `portrait.jpg` | 1200×1600 (3:4) | твой портрет в секции Approach |
+| `hero.jpg` | 2400×1000 | кадр-заставка шоурила |
+| `work-1…6.jpg` | 1600×900 | кадры работ в раскрытых строках |
 | `og.jpg` | 1200×630 | превью при отправке ссылки в мессенджер |
 
 Держи каждый файл до ~500 КБ, иначе сайт будет грузиться медленно.
@@ -162,14 +170,14 @@ git push -u origin main
 Вся палитра — в начале `styles.css`, блок `:root`:
 
 ```css
---bg:     #08111A;   /* основной фон */
---blue:   #17384E;   /* синий средний */
---steel:  #6E9AB4;   /* приглушённый текст, подписи */
---paper:  #E4EDF3;   /* основной текст */
---amber:  #C08A5E;   /* тёплый акцент — точка у часов, номера принципов */
+--bg:    #080d13;   /* основной фон */
+--ink:   #e9eef2;   /* основной текст */
+--ink-2: #aebac4;   /* вторичный текст */
+--muted: #61717e;   /* моно-подписи */
+--line:  rgba(233, 238, 242, .10);  /* линейки таблицы */
 ```
 
-Сила зерна — там же, селектор `.grain`, свойство `opacity` (сейчас `.5`).
+Сила зерна — там же, селектор `.grain`, свойство `opacity` (сейчас `.035`).
 Убрать зерно совсем — поставить `opacity: 0`.
 
 ---
@@ -179,7 +187,7 @@ git push -u origin main
 ```
 index.html    разметка секций
 styles.css    вся вёрстка и палитра
-app.js        логика: языки, модалка видео, лайтбокс, анимации
+app.js        логика: языки, таблица работ, сортировка, модалка видео
 content.js    ← твой контент, только его и правишь
 vercel.json   кеш и заголовки
 assets/img/   картинки
