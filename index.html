@@ -3,15 +3,69 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<title>Rustam Bulatov — Film Director</title>
-<meta name="description" content="Director Rustam Bulatov. Warsaw and Europe. Commercials, music videos and short films." />
+<title>Rustam Bulatov — Film Director, Warsaw</title>
+<meta name="description" content="Rustam Bulatov — film director based in Warsaw, working across Europe. Commercials, music videos and experimental short films." />
+<meta name="author" content="Rustam Bulatov" />
 <meta name="theme-color" content="#080d13" />
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
+<link rel="canonical" href="/" id="metaCanonical" />
 
-<meta property="og:type" content="website" />
-<meta property="og:title" content="Rustam Bulatov — Film Director" />
-<meta property="og:description" content="Director Rustam Bulatov. Warsaw and Europe." />
-<meta property="og:image" content="assets/img/og.jpg" />
+<!-- ░░ ПРЕВЬЮ ССЫЛКИ (Telegram, WhatsApp, Facebook, LinkedIn, Slack, X) ░░
+     Картинка: assets/img/og.jpg — 1200×630.
+     Пути ниже относительные. Когда появится домен — впиши его одной строкой
+     в content.js → SITE.url, и app.js сам подставит абсолютные адреса.       -->
+<meta property="og:type" content="profile" />
+<meta property="og:site_name" content="Rustam Bulatov" />
+<meta property="og:locale" content="en_US" />
+<meta property="og:locale:alternate" content="pl_PL" />
+<meta property="og:url" content="/" id="metaOgUrl" />
+<meta property="og:title" content="Rustam Bulatov — Film Director, Warsaw" />
+<meta property="og:description" content="Film director based in Warsaw, working across Europe. Commercials, music videos and experimental short films." />
+<meta property="og:image" content="assets/img/og.jpg" id="metaOgImage" />
+<meta property="og:image:secure_url" content="assets/img/og.jpg" id="metaOgImageSecure" />
+<meta property="og:image:type" content="image/jpeg" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content="Portrait of film director Rustam Bulatov" />
+<meta property="profile:first_name" content="Rustam" />
+<meta property="profile:last_name" content="Bulatov" />
+
 <meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Rustam Bulatov — Film Director, Warsaw" />
+<meta name="twitter:description" content="Film director based in Warsaw, working across Europe. Commercials, music videos and experimental short films." />
+<meta name="twitter:image" content="assets/img/og.jpg" id="metaTwImage" />
+<meta name="twitter:image:alt" content="Portrait of film director Rustam Bulatov" />
+
+<!-- ░░ СТРУКТУРИРОВАННЫЕ ДАННЫЕ ДЛЯ ПОИСКОВИКОВ ░░ -->
+<script type="application/ld+json" id="ldPerson">
+{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "Rustam Bulatov",
+  "alternateName": "Рустам Булатов",
+  "jobTitle": "Film Director",
+  "description": "Film director based in Warsaw, working across Europe. Commercials, music videos and experimental short films.",
+  "url": "/",
+  "email": "mailto:rustambulatov05@gmail.com",
+  "knowsLanguage": ["en", "pl", "ru"],
+  "image": {
+    "@type": "ImageObject",
+    "url": "assets/img/portrait.jpg",
+    "width": 1000,
+    "height": 1226,
+    "caption": "Rustam Bulatov"
+  },
+  "address": {
+    "@type": "PostalAddress",
+    "addressLocality": "Warsaw",
+    "addressCountry": "PL"
+  },
+  "workLocation": {
+    "@type": "Place",
+    "name": "Warsaw, Europe"
+  }
+}
+</script>
 
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -95,7 +149,18 @@
 
     <div class="about">
       <div class="about__text reveal" id="aboutText"></div>
-      <dl class="about__meta" id="aboutMeta"></dl>
+
+      <div class="about__side">
+        <!-- Портрет. Замена — assets/img/portrait.jpg (вертикальный кадр). -->
+        <figure class="about__photo reveal">
+          <img src="assets/img/portrait.jpg" width="1000" height="1226"
+               alt="Rustam Bulatov, film director based in Warsaw"
+               loading="lazy" decoding="async" />
+          <figcaption class="mono muted" id="aboutPhotoCaption"></figcaption>
+        </figure>
+
+        <dl class="about__meta" id="aboutMeta"></dl>
+      </div>
     </div>
   </section>
 

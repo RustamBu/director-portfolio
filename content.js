@@ -12,6 +12,12 @@ const SITE = {
   // Город (шапка подвала)
   city: { en: "Warsaw", pl: "Warszawa" },
 
+  // Адрес сайта БЕЗ слэша на конце — например "https://rustambulatov.com".
+  // Пустая строка = относительные пути (работают в Telegram, Facebook, Slack).
+  // Как появится домен — впиши сюда, и превью ссылки подтянется везде,
+  // включая LinkedIn и Google.
+  url: "",
+
   // Контакты
   email: "rustambulatov05@gmail.com",
 
@@ -175,6 +181,7 @@ const I18N = {
     "work.soon": "Coming soon",
 
     "about.label": "About",
+    "about.photo": "Director",
 
     "contact.label": "Contact",
     "contact.copy": "Copy",
@@ -206,6 +213,7 @@ const I18N = {
     "work.soon": "Wkrótce",
 
     "about.label": "O mnie",
+    "about.photo": "Reżyser",
 
     "contact.label": "Kontakt",
     "contact.copy": "Kopiuj",
