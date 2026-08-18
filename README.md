@@ -1,6 +1,6 @@
 # Режиссёрское портфолио — статичный сайт
 
-Одностраничник: hero → работы → подход/стиль → портреты и бекстейдж → контакты.
+Одностраничник: hero → работы → подход/стиль → контакты.
 Два языка (EN / PL), тёмная винтажная синяя палитра с плёночным зерном.
 
 **Без сборки и зависимостей.** Это чистые HTML + CSS + JS. Vercel раздаёт папку как есть,
@@ -41,13 +41,9 @@ socials: [ { label, handle, url } ],
 resumeUrl: "",                // пусто = кнопка CV скрыта
 ```
 
-### Шоурил и фон hero
+### Фон hero
 
 ```js
-reel: { kind: "youtube", id: "dQw4w9WgXcQ" },   // ID из ссылки YouTube
-// или
-reel: { kind: "mp4", src: "assets/video/reel.mp4" },
-
 heroMedia: { kind: "image", src: "assets/img/hero.jpg" },
 // или видео-луп на фоне:
 heroMedia: { kind: "video", src: "assets/video/hero-loop.mp4", poster: "assets/img/hero.jpg" },
@@ -64,7 +60,6 @@ heroMedia: { kind: "video", src: "assets/video/hero-loop.mp4", poster: "assets/i
 ```js
 {
   title: "Metropolis",
-  client: "Nike",
   year: "2025",
   type: { en: "Commercial", pl: "Reklama" },
   featured: true,                       // true = карточка во всю ширину
@@ -76,10 +71,6 @@ heroMedia: { kind: "video", src: "assets/video/hero-loop.mp4", poster: "assets/i
 ```
 
 Ставь `featured: true` только у одной–двух лучших работ, иначе эффект пропадает.
-
-### Фото — массив `PHOTOS`
-
-Кладка масонри: **пропорции любые**, ничего подгонять не нужно. Просто добавляй строки.
 
 ### Тексты интерфейса — объект `I18N`
 
@@ -98,7 +89,6 @@ heroMedia: { kind: "video", src: "assets/video/hero-loop.mp4", poster: "assets/i
 | `hero.jpg` | 2400×1350 (16:9) | фон первого экрана |
 | `work-1…6.jpg` | 1600×900 (16:9) | превью работ |
 | `portrait.jpg` | 1200×1600 (3:4) | твой портрет в секции Approach |
-| `photo-1…8.jpg` | ширина 1200–1600, пропорции любые | портреты и бекстейдж |
 | `og.jpg` | 1200×630 | превью при отправке ссылки в мессенджер |
 
 Держи каждый файл до ~500 КБ, иначе сайт будет грузиться медленно.

@@ -43,7 +43,6 @@
     $$("[data-i18n]").forEach((n) => { n.textContent = t(n.dataset.i18n); });
     $$("[data-setlang]").forEach((b) => b.classList.toggle("is-active", b.dataset.setlang === lang));
 
-    renderMarquee();
     renderWork();
     renderApproach();
     renderContact();
@@ -77,13 +76,6 @@
       i.onerror = () => { i.remove(); };
       box.appendChild(i);
     }
-  }
-
-  /* -------------------------------------------------------------- marquee */
-  function renderMarquee() {
-    const track = $("#marqueeTrack");
-    const items = (SITE.marquee || []).map((x) => `<span>${esc(x)}</span>`).join("");
-    track.innerHTML = items + items; // дублируем для бесшовной прокрутки
   }
 
   /* ----------------------------------------------------------------- work */
@@ -122,9 +114,7 @@
 
       card.appendChild(
         el("div", "card__meta",
-          '<div><h3 class="card__title">' + esc(p.title) + "</h3>" +
-          (p.client ? '<span class="card__client">' + esc(p.client) + "</span>" : "") +
-          "</div>" +
+          '<div><h3 class="card__title">' + esc(p.title) + "</h3></div>" +
           '<div class="card__right"><span class="card__type">' + esc(L(p.type)) + "</span>" +
           (p.year ? '<span class="card__year">' + esc(p.year) + "</span>" : "") +
           "</div>")
@@ -339,17 +329,6 @@
   );
 
   /* -------------------------------------------------------------- actions */
-  $("#reelBtn").addEventListener("click", () =>
-    openModal({
-      title: SITE.name,
-      video: SITE.reel,
-      year: String(new Date().getFullYear()),
-      type: { en: "Showreel", pl: "Showreel" },
-      description: { en: "", pl: "" },
-      credits: [],
-    })
-  );
-
   $("#copyEmail").addEventListener("click", async (e) => {
     const span = e.currentTarget.querySelector("span");
     try {

@@ -16,7 +16,7 @@ const SITE = {
   timezone: "Europe/Warsaw",
 
   // Контакты
-  email: "rusyabulatov05@gmail.com",
+  email: "rustambulatov05@gmail.com",
   phone: "", // например "+48 000 000 000" — оставь "" чтобы скрыть
 
   // Соцсети. Убери строку, если не нужна.
@@ -28,25 +28,10 @@ const SITE = {
   // Ссылка на резюме / шоурил-PDF. Оставь "" чтобы скрыть кнопку.
   resumeUrl: "",
 
-  // Главный шоурил — открывается по кнопке в hero.
-  // kind: "youtube" (просто вставь ID из ссылки) или "mp4" (файл в assets/video/)
-  reel: { kind: "youtube", id: "dQw4w9WgXcQ" },
-  // Пример mp4: reel: { kind: "mp4", src: "assets/video/reel.mp4" },
-
   // Фон hero-секции. Может быть картинкой или видео-лупом.
   // kind: "image" | "video"
   heroMedia: { kind: "image", src: "assets/img/hero.jpg" },
   // Пример видео-фона: { kind: "video", src: "assets/video/hero-loop.mp4", poster: "assets/img/hero.jpg" }
-
-  // Бегущая строка под hero — ключевые слова / клиенты
-  marquee: [
-    "COMMERCIAL",
-    "MUSIC VIDEO",
-    "SHORT FILM",
-    "FASHION",
-    "DOCUMENTARY",
-    "BRANDED CONTENT",
-  ],
 };
 
 /* -------------------------------------------------------------------------
@@ -61,7 +46,6 @@ const SITE = {
 const PROJECTS = [
   {
     title: "Metropolis",
-    client: "Nike",
     year: "2025",
     role: { en: "Director", pl: "Reżyser" },
     type: { en: "Commercial", pl: "Reklama" },
@@ -79,7 +63,6 @@ const PROJECTS = [
   },
   {
     title: "Blue Hour",
-    client: "Independent",
     year: "2025",
     role: { en: "Director", pl: "Reżyser" },
     type: { en: "Short Film", pl: "Film krótkometrażowy" },
@@ -94,7 +77,6 @@ const PROJECTS = [
   },
   {
     title: "Static",
-    client: "Artist Name",
     year: "2024",
     role: { en: "Director", pl: "Reżyser" },
     type: { en: "Music Video", pl: "Teledysk" },
@@ -109,7 +91,6 @@ const PROJECTS = [
   },
   {
     title: "Salt",
-    client: "Fashion House",
     year: "2024",
     role: { en: "Director", pl: "Reżyser" },
     type: { en: "Fashion Film", pl: "Film modowy" },
@@ -124,7 +105,6 @@ const PROJECTS = [
   },
   {
     title: "Rehearsal",
-    client: "Theatre Company",
     year: "2023",
     role: { en: "Director", pl: "Reżyser" },
     type: { en: "Documentary", pl: "Dokument" },
@@ -139,7 +119,6 @@ const PROJECTS = [
   },
   {
     title: "Nightshift",
-    client: "Brand",
     year: "2023",
     role: { en: "Director", pl: "Reżyser" },
     type: { en: "Branded Content", pl: "Content brandowy" },
@@ -227,7 +206,6 @@ const I18N = {
     "hero.title.3": "unrepeatable moments",
     "hero.lede":
       "I make commercials, music videos and short films that keep the texture of the real thing — practical light, real locations, and performances caught rather than staged.",
-    "hero.cta.reel": "Watch the reel",
     "hero.cta.work": "Selected work",
     "hero.scroll": "Scroll",
 
@@ -271,7 +249,6 @@ const I18N = {
     "hero.title.3": "niepowtarzalną chwilą",
     "hero.lede":
       "Robię reklamy, teledyski i filmy krótkometrażowe, które zachowują fakturę rzeczywistości — praktyczne światło, prawdziwe lokacje i aktorstwo złapane, a nie zainscenizowane.",
-    "hero.cta.reel": "Zobacz showreel",
     "hero.cta.work": "Wybrane prace",
     "hero.scroll": "Przewiń",
 
