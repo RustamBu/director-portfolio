@@ -75,13 +75,11 @@ const PROJECTS = [
     credits: [],
   },
   {
-    // Ссылка появится позже — пока строка показывает «Coming soon».
-    // Как будет ссылка: video: { kind: "youtube", id: "ID_ИЗ_ССЫЛКИ" }
     title: "Run with Me",
     year: "2025",
     format: { en: "Music Video", pl: "Teledysk" },
-    poster: null,
-    video: null,
+    poster: "https://i.ytimg.com/vi/GwTPkAQkCBA/maxresdefault.jpg",
+    video: { kind: "youtube", id: "GwTPkAQkCBA" },
     description: null,
     credits: [],
   },
