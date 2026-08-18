@@ -444,7 +444,28 @@ ul, ol { list-style: none; }
 }
 .about__text p + p { margin-top: 1em; max-width: 40ch; }
 
-.about__meta { display: grid; }
+/* правая колонка: маленький портрет + мета-строки */
+.about__side {
+  display: grid;
+  gap: clamp(22px, 3vw, 34px);
+  justify-items: start;
+}
+
+.about__photo { width: 132px; }
+
+.about__photo img {
+  width: 100%;
+  height: auto;
+  border-radius: 2px;
+  filter: grayscale(1);
+  opacity: .88;
+  transition: opacity .5s var(--ease), transform .5s var(--ease);
+}
+.about__photo:hover img { opacity: 1; transform: translateY(-2px); }
+
+.about__photo figcaption { margin-top: 10px; }
+
+.about__meta { display: grid; width: 100%; }
 
 .about__meta .row-meta {
   display: flex;
@@ -649,6 +670,7 @@ ul, ol { list-style: none; }
 
   .about { grid-template-columns: 1fr; }
   .about__text p, .about__text p + p { max-width: none; }
+  .about__photo { width: 112px; }
 
   .contact { align-items: flex-start; flex-direction: column; }
   .socials { padding-bottom: 0; }

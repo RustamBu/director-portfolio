@@ -165,6 +165,9 @@
     box.innerHTML = "";
     (L(ABOUT.statement) || []).forEach((para) => box.appendChild(el("p", null, esc(para))));
 
+    const cap = $("#aboutPhotoCaption");
+    if (cap) cap.textContent = t("about.photo");
+
     const meta = $("#aboutMeta");
     meta.innerHTML = "";
     (ABOUT.meta || []).forEach((m) => {
@@ -261,6 +264,36 @@
     if (e.key === "Escape" && !modal.hidden) closeModal();
   });
 
+  /* ----------------------------------------------------------------- meta */
+  // Превью ссылки и данные для поисковиков живут в <head> index.html.
+  // Пути там относительные; если в content.js задан SITE.url — делаем их
+  // абсолютными (этого требуют LinkedIn, X и часть ботов).
+  function absoluteMeta() {
+    const base = String(SITE.url || "").trim().replace(/\/+$/, "");
+    if (!base) return;
+
+    const abs = (path) => base + "/" + String(path).replace(/^\.?\//, "");
+    const set = (id, attr, value) => {
+      const n = document.getElementById(id);
+      if (n) n.setAttribute(attr, value);
+    };
+
+    set("metaCanonical", "href", base + "/");
+    set("metaOgUrl", "content", base + "/");
+    ["metaOgImage", "metaOgImageSecure", "metaTwImage"].forEach((id) =>
+      set(id, "content", abs("assets/img/og.jpg"))
+    );
+
+    const ld = $("#ldPerson");
+    if (!ld) return;
+    try {
+      const data = JSON.parse(ld.textContent);
+      data.url = base + "/";
+      if (data.image && data.image.url) data.image.url = abs(data.image.url);
+      ld.textContent = JSON.stringify(data, null, 2);
+    } catch (e) {}
+  }
+
   /* --------------------------------------------------------------- reveal */
   let io = null;
   function observeReveals() {
@@ -325,6 +358,7 @@
 
   /* ----------------------------------------------------------------- boot */
   renderStatic();
+  absoluteMeta();
   applyLang();
   onScroll();
 

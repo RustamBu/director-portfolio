@@ -98,6 +98,7 @@ meta: [ { k: { en: "Based", ... }, v: { en: "Warsaw", ... } } ],  // строк�
 | `hero.jpg` | 2400×1000 | кадр-заставка шоурила |
 | `work-1…6.jpg` | 1600×900 | кадры работ в раскрытых строках (сейчас в `content.js` вместо них превью с YouTube) |
 | `og.jpg` | 1200×630 | превью при отправке ссылки в мессенджер |
+| `portrait.jpg` | вертикальный | портрет в секции ABOUT и фото для поисковиков |
 
 Держи каждый файл до ~500 КБ, иначе сайт будет грузиться медленно.
 Быстро сжать: [squoosh.app](https://squoosh.app) → формат JPEG/WebP, качество 75–80.
@@ -108,6 +109,41 @@ Vercel отдаёт большие файлы медленно, и мобиль�
 
 Хочешь сгенерировать заглушки заново — `python3 tools/make_placeholders.py`
 (нужны `pillow` и `numpy`). Папку `tools/` можно удалить, на сайт она не влияет.
+
+---
+
+## 3.1. Превью ссылки и поисковики
+
+Когда ссылку на сайт кидают в Telegram, WhatsApp, Facebook или Slack,
+подтягивается `assets/img/og.jpg` — 1200×630, портрет слева, имя справа.
+Он же лежит в `<meta property="og:image">` в `index.html`.
+
+Портрет `assets/img/portrait.jpg` показывается в секции ABOUT и отдаётся
+поисковикам как фото человека — через блок `application/ld+json` в `<head>`
+(разметка `Person`: имя, роль, город, языки, почта). Благодаря
+`max-image-preview:large` Google может показать его крупно в выдаче.
+
+### Впиши домен, когда он появится
+
+В `content.js`, блок `SITE`:
+
+```js
+url: "https://rustambulatov.com",   // без слэша на конце
+```
+
+Пока строка пустая, пути к картинке относительные. Telegram, Facebook, Slack
+и Discord достраивают их сами, а LinkedIn, X и часть ботов — нет. С доменом
+`app.js` подставит абсолютные адреса везде: `og:image`, `twitter:image`,
+`canonical`, `og:url` и в структурированных данных.
+
+Проверить превью после деплоя:
+
+* Facebook — [developers.facebook.com/tools/debug](https://developers.facebook.com/tools/debug/)
+* X — [cards-dev.twitter.com/validator](https://cards-dev.twitter.com/validator)
+* Разметка для Google — [search.google.com/test/rich-results](https://search.google.com/test/rich-results)
+
+Соцсети кешируют превью. Поменял `og.jpg` — прогони ссылку через отладчик
+Facebook и нажми **Scrape Again**, иначе старая картинка провисит сутки.
 
 ---
 
