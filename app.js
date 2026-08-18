@@ -47,6 +47,14 @@
     const reel = SITE.reel || {};
     $("#reelYear").textContent = reel.year || "";
 
+    const reelEl = $("#reel");
+    if (reelEl && reel.ratio) {
+      const [w, h] = String(reel.ratio).split("/");
+      const n = parseFloat(w) / parseFloat(h || 1);
+      reelEl.style.setProperty("--reel-ar", reel.ratio);
+      if (isFinite(n) && n > 0) reelEl.style.setProperty("--reel-arn", String(n));
+    }
+
     const box = $("#reelMedia");
     box.innerHTML = "";
     if (reel.poster) {
@@ -58,6 +66,58 @@
       box.appendChild(i);
     }
     if (!reel.video) $("#reel").hidden = true;
+    else mountReelPreview(reel, box);
+  }
+
+  /* ------------------------------------------------------------ reel auto */
+  // Прямой поток файла с Google Drive (файл должен быть открыт «по ссылке»).
+  function driveStream(id) {
+    return "https://drive.usercontent.google.com/download?id=" +
+           encodeURIComponent(id) + "&export=download&confirm=t";
+  }
+  function driveEmbed(id) {
+    return "https://drive.google.com/file/d/" + encodeURIComponent(id) + "/preview";
+  }
+
+  // Ссылка на файл, который можно проиграть в теге <video>.
+  function fileSrc(v) {
+    if (!v) return "";
+    if (v.kind === "mp4" && v.src) return v.src;
+    if (v.kind === "drive" && v.id) return driveStream(v.id);
+    return "";
+  }
+
+  // Шоурил на первом экране стартует сам: без звука, по кругу.
+  // Браузеры разрешают автостарт только у беззвучного видео — звук включается
+  // кликом, который открывает большое окно.
+  function mountReelPreview(reel, box) {
+    const src = fileSrc(reel.video);
+    if (!src || reel.autoplay === false) return;
+
+    const vid = el("video");
+    vid.src = src;
+    vid.muted = true;
+    vid.defaultMuted = true;
+    vid.autoplay = true;
+    vid.loop = true;
+    vid.playsInline = true;
+    vid.preload = "auto";
+    vid.tabIndex = -1;
+    ["muted", "autoplay", "loop", "playsinline", "webkit-playsinline", "disablepictureinpicture"]
+      .forEach((a) => vid.setAttribute(a, ""));
+    if (reel.poster) vid.poster = reel.poster;
+
+    // Не открылся файл (нет доступа, лимит Drive) — остаётся постер.
+    vid.addEventListener("error", () => vid.remove());
+    box.appendChild(vid);
+
+    const kick = () => { const p = vid.play(); if (p && p.catch) p.catch(() => {}); };
+    kick();
+    // Если браузер всё же придержал автостарт — стартуем с первого касания.
+    document.addEventListener("pointerdown", kick, { once: true });
+    document.addEventListener("visibilitychange", () => {
+      if (!document.hidden && vid.isConnected && vid.paused) kick();
+    });
   }
 
   /* ----------------------------------------------------------------- lang */
@@ -231,14 +291,27 @@
       f.allowFullscreen = true;
       f.title = title || "Video";
       stage.appendChild(f);
-    } else if (v && v.kind === "mp4" && v.src) {
+    } else if (fileSrc(v)) {
       const vid = el("video");
-      vid.src = v.src;
+      vid.src = fileSrc(v);
       vid.controls = true;
       vid.autoplay = true;
       vid.playsInline = true;
       vid.setAttribute("playsinline", "");
       if (poster) vid.poster = poster;
+      // Прямой поток Drive иногда упирается в лимит — тогда показываем
+      // штатный плеер Drive, он играет всегда.
+      if (v.kind === "drive") {
+        vid.addEventListener("error", () => {
+          if (!vid.isConnected) return;
+          const f = el("iframe");
+          f.src = driveEmbed(v.id);
+          f.allow = "autoplay; encrypted-media; picture-in-picture; fullscreen";
+          f.allowFullscreen = true;
+          f.title = title || "Video";
+          vid.replaceWith(f);
+        });
+      }
       stage.appendChild(vid);
     } else {
       stage.appendChild(el("div", "placeholder", esc(t("work.soon"))));
