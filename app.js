@@ -361,11 +361,14 @@
 
   /* ----------------------------------------------------------------- meta */
   // Превью ссылки и данные для поисковиков живут в <head> index.html.
-  // Пути там относительные; если в content.js задан SITE.url — делаем их
-  // абсолютными (этого требуют LinkedIn, X и часть ботов).
-  function absoluteMeta() {
-    const base = String(SITE.url || "").trim().replace(/\/+$/, "");
-    if (!base) return;
+  // Пути там от корня сайта — бот без JS заберёт фото и так. Здесь адреса
+  // становятся абсолютными: берём домен из content.js → SITE.url, а пока его
+  // нет — адрес, с которого открыта страница. Абсолютные ссылки требуют
+  // LinkedIn, X и часть ботов.
+  function applyMeta() {
+    const base =
+      String(SITE.url || "").trim().replace(/\/+$/, "") ||
+      (/^https?:$/.test(location.protocol) ? location.origin : "");
 
     const abs = (path) => base + "/" + String(path).replace(/^\.?\//, "");
     const set = (id, attr, value) => {
@@ -373,18 +376,26 @@
       if (n) n.setAttribute(attr, value);
     };
 
-    set("metaCanonical", "href", base + "/");
-    set("metaOgUrl", "content", base + "/");
-    ["metaOgImage", "metaOgImageSecure", "metaTwImage"].forEach((id) =>
-      set(id, "content", abs("assets/img/og.jpg"))
-    );
+    if (base) {
+      set("metaCanonical", "href", base + "/");
+      set("metaOgUrl", "content", base + "/");
+      set("metaImageSrc", "href", abs("assets/img/og.jpg"));
+      ["metaOgImage", "metaOgImageSecure", "metaTwImage"].forEach((id) =>
+        set(id, "content", abs("assets/img/og.jpg"))
+      );
+    }
 
     const ld = $("#ldPerson");
     if (!ld) return;
     try {
       const data = JSON.parse(ld.textContent);
-      data.url = base + "/";
-      if (data.image && data.image.url) data.image.url = abs(data.image.url);
+      // Профили из content.js — по ним поисковик связывает сайт с человеком.
+      const same = (SITE.socials || []).map((so) => so.url).filter(Boolean);
+      if (same.length) data.sameAs = same;
+      if (base) {
+        data.url = base + "/";
+        if (data.image && data.image.url) data.image.url = abs(data.image.url);
+      }
       ld.textContent = JSON.stringify(data, null, 2);
     } catch (e) {}
   }
@@ -453,7 +464,7 @@
 
   /* ----------------------------------------------------------------- boot */
   renderStatic();
-  absoluteMeta();
+  applyMeta();
   applyLang();
   onScroll();
 

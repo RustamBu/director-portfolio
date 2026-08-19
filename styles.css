@@ -111,7 +111,7 @@ ul, ol { list-style: none; }
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 24px;
+  gap: clamp(18px, 2.4vw, 34px);
   padding: 22px var(--pad);
   transition: background-color .4s var(--ease), backdrop-filter .4s var(--ease), padding .4s var(--ease);
 }
@@ -127,6 +127,16 @@ ul, ol { list-style: none; }
 .nav__brand { color: var(--ink); }
 
 .nav__links {
+  display: flex;
+  align-items: center;
+  gap: clamp(18px, 2.4vw, 34px);
+  margin-left: auto;
+}
+
+/* Язык и бургер — всегда в шапке, поверх выпадающего меню. */
+.nav__actions {
+  position: relative;
+  z-index: 2;
   display: flex;
   align-items: center;
   gap: clamp(18px, 2.4vw, 34px);
@@ -711,8 +721,13 @@ ul, ol { list-style: none; }
   .nav__links.is-open { opacity: 1; pointer-events: auto; transform: none; }
   .nav__links a { font-size: 13px; letter-spacing: .22em; color: var(--ink); }
 
-  .nav__links.is-open ~ .nav__burger i:first-child { transform: translateY(3px) rotate(45deg); }
-  .nav__links.is-open ~ .nav__burger i:last-child  { transform: translateY(-3px) rotate(-45deg); }
+  .nav__links.is-open ~ .nav__actions .nav__burger i:first-child { transform: translateY(3px) rotate(45deg); }
+  .nav__links.is-open ~ .nav__actions .nav__burger i:last-child  { transform: translateY(-3px) rotate(-45deg); }
+
+  /* Переключатель языка виден на первом экране, палец в него попадает. */
+  .nav__actions { gap: 16px; }
+  .lang { gap: 2px; }
+  .lang__btn { padding: 8px 7px; }
 
   .reel__stage { aspect-ratio: var(--reel-ar, 16 / 10); }
   .reel__btn svg { width: 42px; height: 42px; }
