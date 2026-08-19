@@ -166,29 +166,39 @@ ffmpeg -i showreel.mov -c:v libx264 -profile:v high -pix_fmt yuv420p -crf 26 \
 ссылки. Меняешь портрет — перерисуй и `og.jpg`, чтобы лицо было одно и то же
 в выдаче, в мессенджерах и на самой странице.
 
-### Впиши домен, когда он появится
+### Домен
 
-В `content.js`, блок `SITE`:
+Домен сайта — **rbulatov.com**. Он вписан в трёх местах, и все три должны
+совпадать, если сайт когда-нибудь переедет:
 
-```js
-url: "https://rustambulatov.com",   // без слэша на конце
-```
+1. `content.js` → `SITE.url` — `"https://rbulatov.com"`, без слэша на конце;
+2. `index.html`, блок `<head>` — полные адреса в `canonical`, `og:url`,
+   `og:image`, `twitter:image`, `image_src` и в разметке `Person`;
+3. `robots.txt` и `sitemap.xml`.
 
-Пока строка пустая, пути к картинке идут от корня сайта (`/assets/img/og.jpg`)
-— так их верно поймёт любой бот на любом домене, включая `*.vercel.app`.
-Плюс `app.js` достраивает адреса до абсолютных по адресу открытой страницы.
-С доменом в `SITE.url` абсолютные адреса встанут везде и наверняка: `og:image`,
-`twitter:image`, `canonical`, `og:url` и в структурированных данных — этого
-требуют LinkedIn, X и часть ботов, которые не выполняют JS.
+Почему адреса в `<head>` записаны целиком, а не коротко (`/assets/img/og.jpg`):
+Facebook, LinkedIn и X не выполняют JS и часть из них не достраивает короткие
+пути. Что видит бот в исходном HTML — то и покажет. `app.js` подставляет те же
+адреса из `SITE.url` уже в браузере — на случай, если в `<head>` забудут
+поправить.
 
-Проверить превью после деплоя:
+### Проверить превью после деплоя
 
 * Facebook — [developers.facebook.com/tools/debug](https://developers.facebook.com/tools/debug/)
 * X — [cards-dev.twitter.com/validator](https://cards-dev.twitter.com/validator)
 * Разметка для Google — [search.google.com/test/rich-results](https://search.google.com/test/rich-results)
+* Индексация — [Google Search Console](https://search.google.com/search-console)
 
-Соцсети кешируют превью. Поменял `og.jpg` — прогони ссылку через отладчик
-Facebook и нажми **Scrape Again**, иначе старая картинка провисит сутки.
+**Отладчик Facebook** — это не про Facebook, а про кеш. Facebook (и Instagram,
+и Messenger, и WhatsApp) один раз забирает картинку с сайта и хранит её у себя
+неделями. Поменял `og.jpg` или заголовок — в мессенджерах ещё долго висит
+старое. Вставляешь адрес сайта в отладчик, жмёшь **Scrape Again** — Facebook
+идёт на сайт заново и обновляет кеш сразу. Заодно показывает, что именно он
+прочитал: картинку, заголовок, описание, — так видно, дошло превью или нет.
+
+Прогонять стоит после первого деплоя и каждый раз, когда меняешь `og.jpg`,
+заголовок или описание. Первый раз попросит войти в аккаунт Facebook — это
+нормально, инструмент для разработчиков.
 
 ---
 
@@ -200,7 +210,8 @@ Facebook и нажми **Scrape Again**, иначе старая картинк�
 2. Имя, например `portfolio`, **Public**, ничего больше не отмечаешь → **Create repository**
 3. На странице репозитория → **uploading an existing file**
 4. Перетаскиваешь **содержимое** папки `director-portfolio` (не саму папку — то, что внутри:
-   `index.html`, `styles.css`, `app.js`, `content.js`, `vercel.json`, папку `assets`)
+   `index.html`, `styles.css`, `app.js`, `content.js`, `vercel.json`,
+   `robots.txt`, `sitemap.xml`, папку `assets`)
 5. **Commit changes**
 
 ### Вариант Б — через терминал
@@ -271,6 +282,8 @@ styles.css    вся вёрстка и палитра
 app.js        логика: языки, таблица работ, сортировка, модалка видео
 content.js    ← твой контент, только его и правишь
 vercel.json   кеш и заголовки
+robots.txt    разрешение на индексацию + адрес карты сайта
+sitemap.xml   карта сайта для поисковиков
 assets/img/   картинки
 assets/video/ видеофайлы (если mp4)
 tools/        генератор заглушек, для сайта не нужен

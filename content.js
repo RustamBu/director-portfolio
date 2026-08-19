@@ -12,11 +12,10 @@ const SITE = {
   // Город (шапка подвала)
   city: { en: "Warsaw", pl: "Warszawa" },
 
-  // Адрес сайта БЕЗ слэша на конце — например "https://rustambulatov.com".
-  // Пустая строка = относительные пути (работают в Telegram, Facebook, Slack).
-  // Как появится домен — впиши сюда, и превью ссылки подтянется везде,
-  // включая LinkedIn и Google.
-  url: "",
+  // Адрес сайта БЕЗ слэша на конце.
+  // По нему строятся ссылка на картинку превью, canonical и данные для Google.
+  // Переедешь на другой домен — поменяй здесь и в <head> файла index.html.
+  url: "https://rbulatov.com",
 
   // Контакты
   email: "rustambulatov05@gmail.com",

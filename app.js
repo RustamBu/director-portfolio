@@ -370,7 +370,9 @@
       String(SITE.url || "").trim().replace(/\/+$/, "") ||
       (/^https?:$/.test(location.protocol) ? location.origin : "");
 
-    const abs = (path) => base + "/" + String(path).replace(/^\.?\//, "");
+    // Адрес уже с доменом — оставляем как есть, иначе достраиваем.
+    const abs = (path) =>
+      /^https?:\/\//i.test(path) ? path : base + "/" + String(path).replace(/^\.?\//, "");
     const set = (id, attr, value) => {
       const n = document.getElementById(id);
       if (n) n.setAttribute(attr, value);
