@@ -23,7 +23,7 @@ const SITE = {
 
   // Соцсети. Убери строку — исчезнет и ссылка.
   socials: [
-    { label: "Instagram", url: "https://instagram.com/" },
+    { label: "Instagram", url: "https://www.instagram.com/rustambulatov_/" },
   ],
 
   // Шоурил на первом экране.
@@ -155,10 +155,12 @@ const PROJECTS = [
 const ABOUT = {
   statement: {
     en: [
-      "What interests me first is conflict — inside a person and between people — and the story that grows out of it. The format comes second: film, commercial or music video.",
+      "What interests me above all is conflict — inside a person and between people.",
+      "And the story that grows out of it.",
     ],
     pl: [
-      "Najbardziej interesuje mnie konflikt — wewnątrz człowieka i między ludźmi — oraz historia, która z niego wyrasta. Format jest drugorzędny: film, reklama czy teledysk.",
+      "Przede wszystkim interesuje mnie konflikt — w człowieku i między ludźmi.",
+      "Oraz historia, która z niego wyrasta.",
     ],
   },
   // Правая колонка секции ABOUT

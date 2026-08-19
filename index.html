@@ -12,8 +12,9 @@
 
 <!-- ░░ ПРЕВЬЮ ССЫЛКИ (Telegram, WhatsApp, Facebook, LinkedIn, Slack, X) ░░
      Картинка: assets/img/og.jpg — 1200×630.
-     Пути ниже относительные. Когда появится домен — впиши его одной строкой
-     в content.js → SITE.url, и app.js сам подставит абсолютные адреса.       -->
+     Пути ниже — от корня сайта, они верны на любом домене. Когда появится
+     свой адрес — впиши его одной строкой в content.js → SITE.url, и app.js
+     сам подставит абсолютные ссылки (их требуют LinkedIn, X и часть ботов). -->
 <meta property="og:type" content="profile" />
 <meta property="og:site_name" content="Rustam Bulatov" />
 <meta property="og:locale" content="en_US" />
@@ -21,8 +22,8 @@
 <meta property="og:url" content="/" id="metaOgUrl" />
 <meta property="og:title" content="Rustam Bulatov — Film Director, Warsaw" />
 <meta property="og:description" content="Film director based in Warsaw, working across Europe. Commercials, music videos and experimental short films." />
-<meta property="og:image" content="assets/img/og.jpg" id="metaOgImage" />
-<meta property="og:image:secure_url" content="assets/img/og.jpg" id="metaOgImageSecure" />
+<meta property="og:image" content="/assets/img/og.jpg" id="metaOgImage" />
+<meta property="og:image:secure_url" content="/assets/img/og.jpg" id="metaOgImageSecure" />
 <meta property="og:image:type" content="image/jpeg" />
 <meta property="og:image:width" content="1200" />
 <meta property="og:image:height" content="630" />
@@ -33,10 +34,13 @@
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content="Rustam Bulatov — Film Director, Warsaw" />
 <meta name="twitter:description" content="Film director based in Warsaw, working across Europe. Commercials, music videos and experimental short films." />
-<meta name="twitter:image" content="assets/img/og.jpg" id="metaTwImage" />
+<meta name="twitter:image" content="/assets/img/og.jpg" id="metaTwImage" />
 <meta name="twitter:image:alt" content="Portrait of film director Rustam Bulatov" />
 
-<!-- ░░ СТРУКТУРИРОВАННЫЕ ДАННЫЕ ДЛЯ ПОИСКОВИКОВ ░░ -->
+<!-- ░░ СТРУКТУРИРОВАННЫЕ ДАННЫЕ ДЛЯ ПОИСКОВИКОВ ░░
+     Фото человека — тот же портрет, что в секции ABOUT. Список sameAs
+     app.js перезаписывает из content.js → SITE.socials; здесь он лежит
+     для ботов, которые не выполняют JS.                                  -->
 <script type="application/ld+json" id="ldPerson">
 {
   "@context": "https://schema.org",
@@ -50,11 +54,12 @@
   "knowsLanguage": ["en", "pl", "ru"],
   "image": {
     "@type": "ImageObject",
-    "url": "assets/img/portrait.jpg",
+    "url": "/assets/img/portrait.jpg",
     "width": 1000,
     "height": 1226,
     "caption": "Rustam Bulatov"
   },
+  "sameAs": ["https://www.instagram.com/rustambulatov_/"],
   "address": {
     "@type": "PostalAddress",
     "addressLocality": "Warsaw",
@@ -67,6 +72,7 @@
 }
 </script>
 
+<link rel="image_src" href="/assets/img/og.jpg" id="metaImageSrc" />
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -85,16 +91,20 @@
     <a href="#work" class="mono" data-i18n="nav.work"></a>
     <a href="#about" class="mono" data-i18n="nav.about"></a>
     <a href="#contact" class="mono" data-i18n="nav.contact"></a>
+  </nav>
+
+  <!-- Язык всегда в шапке — на телефоне тоже, а не внутри меню. -->
+  <div class="nav__actions">
     <div class="lang" role="group" aria-label="Language">
       <button type="button" class="lang__btn mono is-active" data-setlang="en">EN</button>
       <span class="lang__sep mono">/</span>
       <button type="button" class="lang__btn mono" data-setlang="pl">PL</button>
     </div>
-  </nav>
 
-  <button class="nav__burger" id="burger" aria-label="Menu" aria-expanded="false" aria-controls="navLinks">
-    <i></i><i></i>
-  </button>
+    <button class="nav__burger" id="burger" aria-label="Menu" aria-expanded="false" aria-controls="navLinks">
+      <i></i><i></i>
+    </button>
+  </div>
 </header>
 
 <main id="top">

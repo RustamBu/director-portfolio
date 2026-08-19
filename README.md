@@ -35,7 +35,7 @@ python3 -m http.server 8000
 name: "RUSTAM BULATOV",       // имя в шапке и подвале
 city: { en: "Warsaw", pl: "Warszawa" },
 email: "rustambulatov05@gmail.com",
-socials: [ { label: "Instagram", url: "https://instagram.com/" } ],
+socials: [ { label: "Instagram", url: "https://www.instagram.com/rustambulatov_/" } ],
 ```
 
 ### Шоурил на первом экране
@@ -158,8 +158,13 @@ ffmpeg -i showreel.mov -c:v libx264 -profile:v high -pix_fmt yuv420p -crf 26 \
 
 Портрет `assets/img/portrait.jpg` показывается в секции ABOUT и отдаётся
 поисковикам как фото человека — через блок `application/ld+json` в `<head>`
-(разметка `Person`: имя, роль, город, языки, почта). Благодаря
+(разметка `Person`: имя, роль, город, языки, почта, ссылки на соцсети —
+последние `app.js` берёт из `SITE.socials`). Благодаря
 `max-image-preview:large` Google может показать его крупно в выдаче.
+
+`assets/img/og.jpg` — тот же кадр в формате 1200×630: он уходит в превью
+ссылки. Меняешь портрет — перерисуй и `og.jpg`, чтобы лицо было одно и то же
+в выдаче, в мессенджерах и на самой странице.
 
 ### Впиши домен, когда он появится
 
@@ -169,10 +174,12 @@ ffmpeg -i showreel.mov -c:v libx264 -profile:v high -pix_fmt yuv420p -crf 26 \
 url: "https://rustambulatov.com",   // без слэша на конце
 ```
 
-Пока строка пустая, пути к картинке относительные. Telegram, Facebook, Slack
-и Discord достраивают их сами, а LinkedIn, X и часть ботов — нет. С доменом
-`app.js` подставит абсолютные адреса везде: `og:image`, `twitter:image`,
-`canonical`, `og:url` и в структурированных данных.
+Пока строка пустая, пути к картинке идут от корня сайта (`/assets/img/og.jpg`)
+— так их верно поймёт любой бот на любом домене, включая `*.vercel.app`.
+Плюс `app.js` достраивает адреса до абсолютных по адресу открытой страницы.
+С доменом в `SITE.url` абсолютные адреса встанут везде и наверняка: `og:image`,
+`twitter:image`, `canonical`, `og:url` и в структурированных данных — этого
+требуют LinkedIn, X и часть ботов, которые не выполняют JS.
 
 Проверить превью после деплоя:
 
