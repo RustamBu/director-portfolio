@@ -73,7 +73,17 @@
 </script>
 
 <link rel="image_src" href="/assets/img/og.jpg" id="metaImageSrc" />
-<link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+<!-- ░░ ИКОНКА САЙТА ░░
+     Логотип RB. Поисковики и мобильные браузеры берут разные форматы,
+     поэтому кладём весь набор: .ico в корне (за ним боты идут первым),
+     PNG 48/96 (Google требует размер, кратный 48), SVG для чётких вкладок
+     на десктопе и apple-touch-icon для «на экран Домой» в iOS.           -->
+<link rel="icon" href="/favicon.ico" sizes="48x48" />
+<link rel="icon" href="/assets/favicon-48.png" type="image/png" sizes="48x48" />
+<link rel="icon" href="/assets/favicon-96.png" type="image/png" sizes="96x96" />
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml" sizes="any" />
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png" sizes="180x180" />
+<link rel="manifest" href="/site.webmanifest" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
