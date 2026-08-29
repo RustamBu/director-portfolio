@@ -204,7 +204,8 @@ python3 tools/icons.py
    Google показывал `http://www.rbulatov.com` — иконку он тогда ищет на этом
    адресе. Проверь, что `www.rbulatov.com` вообще открывается: если домен `www`
    не добавлен в Vercel (**Settings → Domains**), бот получает ошибку и рисует
-   глобус. Добавь `www` и оставь ему редирект на `rbulatov.com`.
+   глобус. Добавь `www` и поставь ему **Redirect to `rbulatov.com`** — именно в
+   эту сторону, см. «Домен» ниже.
 2. [Search Console](https://search.google.com/search-console) → **Проверка
    URL** → вставь `https://rbulatov.com/` → **Проверить страницу** →
    **Запросить индексирование**. Отдельно прогони `https://rbulatov.com/favicon.ico`.
@@ -223,15 +224,35 @@ python3 tools/icons.py
 (LinkedIn, X и часть краулеров). `app.js` подставляет тот же адрес ещё раз,
 на случай если контент правили только в `content.js`.
 
-Все остальные версии адреса ведут на канонический: `http://` Vercel
-перенаправляет на `https://` сам, а `www.rbulatov.com` → `rbulatov.com`
-перенаправляет правило `redirects` в `vercel.json`. Это важно не только для
-красоты: Google хранит иконку сайта отдельно для каждой версии адреса, и пока
-в выдаче висит `http://www.rbulatov.com`, иконка берётся именно оттуда.
+Все остальные версии адреса ведут на канонический: `http://` → `https://`
+Vercel перенаправляет сам, а `www.rbulatov.com` → `rbulatov.com` настраивается
+**только** в панели Vercel: проект → **Settings** → **Domains** → у
+`www.rbulatov.com` выбрать **Redirect to `rbulatov.com`** (код 308). Это важно
+не только для красоты: Google хранит иконку сайта отдельно для каждой версии
+адреса, и пока в выдаче висит `http://www.rbulatov.com`, иконка берётся именно
+оттуда.
+
+**Редирект настраивается ровно в одном месте — в панели Vercel.** Такое же
+правило в `vercel.json` дублировать нельзя. Vercel применяет редиректы домена
+раньше, чем читает `vercel.json`, и если в панели по умолчанию стоит обратное
+направление (`rbulatov.com` → `www.rbulatov.com`, Vercel часто предлагает
+именно его), два правила начинают перекидывать запрос друг другу: апекс шлёт
+на `www`, `vercel.json` шлёт обратно на апекс — и браузер показывает «слишком
+много перенаправлений», сайт не открывается вообще. Поэтому в `vercel.json`
+блока `redirects` нет. Проверить направление можно так:
+
+```
+curl -sSI https://rbulatov.com/     # ожидаем 200, без Location
+curl -sSI https://www.rbulatov.com/ # ожидаем 308 и Location: https://rbulatov.com/
+```
+
+Если первая команда отдаёт `308` с `Location: https://www.rbulatov.com/` —
+в панели Vercel выбрано обратное направление, надо переключить: апекс
+`rbulatov.com` должен быть основным доменом, а редирект висеть на `www`.
 
 Меняешь домен — правишь в четырёх местах: `content.js` → `SITE.url`, адреса в
-`<head>` index.html, `redirects` в `vercel.json`, `sitemap.xml` и строку
-`Sitemap:` в `robots.txt`.
+`<head>` index.html, `sitemap.xml` и строку `Sitemap:` в `robots.txt`, плюс сам
+домен и его редирект в **Settings → Domains** на Vercel.
 
 Проверить превью после деплоя:
 
@@ -322,7 +343,7 @@ index.html    разметка секций
 styles.css    вся вёрстка и палитра
 app.js        логика: языки, таблица работ, сортировка, модалка видео
 content.js    ← твой контент, только его и правишь
-vercel.json   кеш, заголовки, редирект www → без www
+vercel.json   кеш и заголовки (редиректы — в панели Vercel, не здесь)
 robots.txt    разрешение на индексацию + ссылка на карту сайта
 sitemap.xml   карта сайта для Google
 favicon.ico   иконка сайта для поисковиков
