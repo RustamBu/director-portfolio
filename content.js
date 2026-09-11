@@ -21,6 +21,12 @@ const SITE = {
   // Контакты
   email: "rustambulatov05@gmail.com",
 
+  // Короткая строка на первом экране, рядом с манифестом
+  bio: {
+    en: "Film director based in Warsaw, working across Europe. Music videos, commercials and films.",
+    pl: "Reżyser filmowy z Warszawy, pracuje w całej Europie. Teledyski, reklamy i filmy.",
+  },
+
   // Соцсети. Убери строку — исчезнет и ссылка.
   socials: [
     { label: "Instagram", url: "https://www.instagram.com/rustambulatov_/" },
@@ -33,13 +39,13 @@ const SITE = {
   // autoplay: true — шоурил сам стартует на первом экране (без звука, по кругу),
   //           клик по нему открывает большое окно со звуком.
   //           Для kind: "youtube" автостарт не работает — нужен drive или mp4.
-  // ratio: пропорции окна шоурила — ставь такие же, как у самого видео,
-  //        иначе кадр обрежется по краям. По умолчанию "12 / 5".
+  // duration: подпись «02:14» рядом с годом. Оставь пустым — подставится
+  //        из самого файла, когда он загрузится.
   reel: {
     year: "2026",
+    duration: "",
     poster: "assets/img/reel-poster.jpg",
     video: { kind: "mp4", src: "assets/video/reel.mp4" },
-    ratio: "4 / 3",
     autoplay: true,
   },
 };
@@ -177,18 +183,19 @@ const ABOUT = {
 
 const I18N = {
   en: {
+    "nav.index": "Index",
     "nav.work": "Work",
     "nav.about": "About",
     "nav.contact": "Contact",
     "nav.menu": "Menu",
 
-    "hero.title.1": "Director Rustam Bulatov.",
-    "hero.title.2": "Warsaw and Europe.",
+    "hero.role": "Director",
+    "hero.place": "Warsaw / Europe",
 
     "reel.label": "Showreel",
-    "reel.play": "Full screen",
+    "reel.play": "Play",
 
-    "work.label": "Work",
+    "work.label": "Selected work",
     "work.projects": "projects",
     "work.sort": "Order",
     "work.col.n": "№",
@@ -209,18 +216,19 @@ const I18N = {
   },
 
   pl: {
+    "nav.index": "Indeks",
     "nav.work": "Prace",
     "nav.about": "O mnie",
     "nav.contact": "Kontakt",
     "nav.menu": "Menu",
 
-    "hero.title.1": "Reżyser Rustam Bulatov.",
-    "hero.title.2": "Warszawa i Europa.",
+    "hero.role": "Reżyser",
+    "hero.place": "Warszawa / Europa",
 
     "reel.label": "Showreel",
-    "reel.play": "Pełny ekran",
+    "reel.play": "Odtwórz",
 
-    "work.label": "Prace",
+    "work.label": "Wybrane prace",
     "work.projects": "projekty",
     "work.sort": "Kolejność",
     "work.col.n": "№",

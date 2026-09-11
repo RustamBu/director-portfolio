@@ -6,7 +6,7 @@
 <title>Rustam Bulatov — Film Director, Warsaw</title>
 <meta name="description" content="Rustam Bulatov — film director based in Warsaw, working across Europe. Films, music videos, commercials." />
 <meta name="author" content="Rustam Bulatov" />
-<meta name="theme-color" content="#080d13" />
+<meta name="theme-color" content="#0d100e" />
 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
 <link rel="canonical" href="https://rbulatov.com/" id="metaCanonical" />
 
@@ -86,18 +86,38 @@
 <link rel="manifest" href="/site.webmanifest" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="styles.css" />
 </head>
 
 <body>
 <div class="grain" aria-hidden="true"></div>
 
+<!-- ░░ ЛОГОТИП RB ░░ Одна фигура, дырка в «глазу» вырезана маской, поэтому
+     знак одинаково чисто ложится и на тёмный, и на светлый фон. -->
+<svg class="sprite" width="0" height="0" aria-hidden="true" focusable="false">
+  <defs>
+    <mask id="rbMask" maskUnits="userSpaceOnUse" x="0" y="0" width="1080" height="1080">
+      <rect width="1080" height="1080" fill="#000"/>
+      <rect x="242" y="243" width="203" height="594" fill="#fff"/>
+      <path d="M489 243 H836 V837 L489 506 Z" fill="#fff"/>
+      <circle cx="836" cy="349" r="106" fill="#000"/>
+    </mask>
+    <symbol id="rbMark" viewBox="0 0 1080 1080">
+      <rect width="1080" height="1080" fill="currentColor" mask="url(#rbMask)"/>
+    </symbol>
+  </defs>
+</svg>
+
 <!-- ░░ NAV ░░ -->
 <header class="nav" id="nav">
-  <a class="nav__brand mono" href="#top" id="brandName"></a>
+  <a class="nav__brand mono" href="#top">
+    <svg class="mark" aria-hidden="true"><use href="#rbMark"/></svg>
+    <span id="brandName"></span>
+  </a>
 
   <nav class="nav__links" id="navLinks">
+    <a href="#top" class="mono" data-i18n="nav.index"></a>
     <a href="#work" class="mono" data-i18n="nav.work"></a>
     <a href="#about" class="mono" data-i18n="nav.about"></a>
     <a href="#contact" class="mono" data-i18n="nav.contact"></a>
@@ -119,36 +139,46 @@
 
 <main id="top">
 
-  <!-- ░░ HERO ░░ -->
+  <!-- ░░ HERO ░░
+       Первый экран собран колонкой: подписи → шоурил → линия → имя.
+       Шоурил тянется по остатку высоты, поэтому имя целиком видно
+       без прокрутки на любом экране. -->
   <section class="hero" id="hero">
-    <h1 class="hero__title">
-      <span class="line"><span data-i18n="hero.title.1"></span></span>
-      <span class="line"><span data-i18n="hero.title.2"></span></span>
-    </h1>
-
-    <div class="reel reveal" id="reel">
-      <div class="reel__head">
-        <span class="mono muted"><span data-i18n="reel.label"></span> <span id="reelYear"></span></span>
-      </div>
-
-      <div class="reel__stage">
-        <span class="reel__media" id="reelMedia"></span>
-        <button class="reel__open" type="button" id="reelPlay" aria-label="Open showreel full screen">
-          <span class="reel__btn" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="11.25" stroke="currentColor" stroke-width="1"/><path d="M10 8.5 16 12l-6 3.5z" fill="currentColor"/></svg>
-          </span>
-          <span class="reel__bar">
-            <span class="mono" data-i18n="reel.play"></span>
-          </span>
-        </button>
-      </div>
+    <div class="hero__intro">
+      <p class="mono hero__note" id="heroStatement"></p>
+      <p class="mono hero__note" id="heroBio"></p>
+      <p class="mono muted hero__note">
+        <span data-i18n="reel.label"></span> <span id="reelYear"></span><span id="reelDuration"></span>
+      </p>
+      <button class="hero__play mono" type="button" id="reelPlay">
+        <span data-i18n="reel.play"></span>
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="11" stroke="currentColor" stroke-width="1"/><path d="M10 8.5 16 12l-6 3.5z" fill="currentColor"/></svg>
+      </button>
     </div>
+
+    <div class="hero__stage reel" id="reel">
+      <span class="reel__media" id="reelMedia"></span>
+      <button class="reel__open" type="button" id="reelOpen" aria-label="Open showreel full screen"></button>
+    </div>
+
+    <div class="hero__rule">
+      <span class="label mono">
+        <svg class="mark" aria-hidden="true"><use href="#rbMark"/></svg>
+        <span data-i18n="hero.role"></span>
+      </span>
+      <span class="mono muted" data-i18n="hero.place"></span>
+    </div>
+
+    <h1 class="hero__name" id="heroName"><span id="heroNameText"></span></h1>
   </section>
 
   <!-- ░░ WORK ░░ -->
   <section class="section" id="work">
     <div class="section__head">
-      <span class="mono muted"><span data-i18n="work.label"></span> — <span id="workCount"></span></span>
+      <span class="label mono">
+        <svg class="mark" aria-hidden="true"><use href="#rbMark"/></svg>
+        <span data-i18n="work.label"></span> — <span id="workCount"></span>
+      </span>
       <button class="sort mono muted" type="button" id="sortBtn" aria-label="Sort by year">
         <span data-i18n="work.sort"></span> <i id="sortArrow">↓</i>
       </button>
@@ -165,9 +195,12 @@
     </div>
   </section>
 
-  <!-- ░░ ABOUT ░░ -->
+  <!-- ░░ ABOUT ░░ светлая полоса на тёмной странице -->
   <section class="section section--about" id="about">
-    <p class="mono muted" data-i18n="about.label"></p>
+    <p class="label mono">
+      <svg class="mark" aria-hidden="true"><use href="#rbMark"/></svg>
+      <span data-i18n="about.label"></span>
+    </p>
 
     <div class="about">
       <div class="about__text reveal" id="aboutText"></div>
@@ -178,7 +211,7 @@
           <img src="assets/img/portrait.jpg" width="1000" height="1226"
                alt="Rustam Bulatov, film director based in Warsaw"
                loading="lazy" decoding="async" />
-          <figcaption class="mono muted" id="aboutPhotoCaption"></figcaption>
+          <figcaption class="mono" id="aboutPhotoCaption"></figcaption>
         </figure>
 
         <dl class="about__meta" id="aboutMeta"></dl>
@@ -188,9 +221,15 @@
 
   <!-- ░░ CONTACT ░░ -->
   <section class="section section--contact" id="contact">
+    <p class="label mono" data-i18n="contact.label"></p>
+
     <div class="contact">
       <a class="contact__email reveal" id="contactEmail" href="#"></a>
-      <ul class="socials mono" id="socials"></ul>
+
+      <div class="contact__side">
+        <svg class="contact__mark" aria-hidden="true"><use href="#rbMark"/></svg>
+        <ul class="socials mono" id="socials"></ul>
+      </div>
     </div>
   </section>
 </main>

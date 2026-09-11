@@ -41,19 +41,13 @@
   /* --------------------------------------------------------------- static */
   function renderStatic() {
     $("#brandName").textContent = SITE.name;
+    $("#heroNameText").textContent = SITE.name;
     $("#footName").textContent = SITE.name;
     $("#footYear").textContent = "© " + new Date().getFullYear();
 
     const reel = SITE.reel || {};
     $("#reelYear").textContent = reel.year || "";
-
-    const reelEl = $("#reel");
-    if (reelEl && reel.ratio) {
-      const [w, h] = String(reel.ratio).split("/");
-      const n = parseFloat(w) / parseFloat(h || 1);
-      reelEl.style.setProperty("--reel-ar", reel.ratio);
-      if (isFinite(n) && n > 0) reelEl.style.setProperty("--reel-arn", String(n));
-    }
+    setDuration(reel.duration);
 
     const box = $("#reelMedia");
     box.innerHTML = "";
@@ -68,6 +62,48 @@
     if (!reel.video) $("#reel").hidden = true;
     else mountReelPreview(reel, box);
   }
+
+  /* ------------------------------------------------------- длительность */
+  // Подпись «02:14» рядом с годом шоурила: из content.js либо из файла.
+  function fmtTime(sec) {
+    if (!isFinite(sec) || sec <= 0) return "";
+    const m = Math.floor(sec / 60);
+    const s = Math.round(sec % 60);
+    return m + ":" + String(s).padStart(2, "0");
+  }
+
+  function setDuration(value) {
+    const n = $("#reelDuration");
+    if (!n) return;
+    n.textContent = value ? " — " + value : "";
+  }
+
+  /* ------------------------------------------------- имя на первом экране */
+  // Имя занимает всю ширину строки и не обрезается: считаем размер шрифта
+  // по фактической ширине текста, а не на глаз.
+  function fitHeroName() {
+    const box = $("#heroName");
+    const text = $("#heroNameText");
+    if (!box || !text || !text.textContent) return;
+
+    const avail = box.clientWidth;
+    if (!avail) return;
+
+    box.style.fontSize = "100px";
+    const w = text.getBoundingClientRect().width;
+    box.style.fontSize = w > 0 ? (100 * avail) / w + "px" : "";
+  }
+
+  let fitPending = false;
+  function queueFit() {
+    if (fitPending) return;
+    fitPending = true;
+    requestAnimationFrame(() => { fitPending = false; fitHeroName(); });
+  }
+
+  window.addEventListener("resize", queueFit, { passive: true });
+  window.addEventListener("orientationchange", queueFit);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(queueFit);
 
   /* ------------------------------------------------------------ reel auto */
   // Прямой поток файла с Google Drive (файл должен быть открыт «по ссылке»).
@@ -107,6 +143,10 @@
       .forEach((a) => vid.setAttribute(a, ""));
     if (reel.poster) vid.poster = reel.poster;
 
+    if (!reel.duration) {
+      vid.addEventListener("loadedmetadata", () => setDuration(fmtTime(vid.duration)));
+    }
+
     // Не открылся файл (нет доступа, лимит Drive) — остаётся постер.
     vid.addEventListener("error", () => vid.remove());
     box.appendChild(vid);
@@ -130,13 +170,20 @@
     $$("[data-setlang]").forEach((b) => b.classList.toggle("is-active", b.dataset.setlang === lang));
 
     $("#footCity").textContent = L(SITE.city);
-    $("#workCount").textContent =
-      String(PROJECTS.length).padStart(2, "0") + " " + t("work.projects");
+    $("#workCount").textContent = String(PROJECTS.length).padStart(2, "0");
 
+    renderHero();
     renderWork();
     renderAbout();
     renderContact();
     observeReveals();
+  }
+
+  /* ----------------------------------------------------------------- hero */
+  function renderHero() {
+    $("#heroStatement").textContent = (L(ABOUT.statement) || []).join(" ");
+    $("#heroBio").textContent = L(SITE.bio);
+    queueFit();
   }
 
   /* ----------------------------------------------------------------- work */
@@ -353,6 +400,7 @@
   }
 
   $("#reelPlay").addEventListener("click", openReel);
+  $("#reelOpen").addEventListener("click", openReel);
   $("#modalClose").addEventListener("click", closeModal);
   $("#modalBackdrop").addEventListener("click", closeModal);
   document.addEventListener("keydown", (e) => {
@@ -467,6 +515,7 @@
   applyMeta();
   applyLang();
   onScroll();
+  fitHeroName();
 
   // ?noanim=1 — мгновенно показать всё без анимаций (удобно для скриншотов)
   if (/[?&]noanim/.test(location.search)) {
