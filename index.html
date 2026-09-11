@@ -140,20 +140,20 @@
 <main id="top">
 
   <!-- ░░ HERO ░░
-       Первый экран собран колонкой: подписи → шоурил → линия → имя.
-       Шоурил тянется по остатку высоты, поэтому имя целиком видно
-       без прокрутки на любом экране. -->
+       Первый экран собран колонкой: текст → подпись шоурила → шоурил →
+       линия → имя. Шоурил тянется по остатку высоты, поэтому имя целиком
+       видно без прокрутки на любом экране. -->
   <section class="hero" id="hero">
     <div class="hero__intro">
       <p class="mono hero__note" id="heroStatement"></p>
-      <p class="mono hero__note" id="heroBio"></p>
-      <p class="mono muted hero__note">
-        <span data-i18n="reel.label"></span> <span id="reelYear"></span><span id="reelDuration"></span>
-      </p>
-      <button class="hero__play mono" type="button" id="reelPlay">
-        <span data-i18n="reel.play"></span>
-        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="11" stroke="currentColor" stroke-width="1"/><path d="M10 8.5 16 12l-6 3.5z" fill="currentColor"/></svg>
-      </button>
+      <p class="mono hero__note hero__note--bio" id="heroBio"></p>
+    </div>
+
+    <!-- Подпись к шоурилу: слева название и год, справа длительность.
+         Вместе с линией под видео берёт кадр в тонкую рамку. -->
+    <div class="hero__meta mono muted" id="reelBar">
+      <span><span data-i18n="reel.label"></span> <span id="reelYear"></span></span>
+      <span id="reelDuration"></span>
     </div>
 
     <div class="hero__stage reel" id="reel">

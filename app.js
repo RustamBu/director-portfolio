@@ -59,12 +59,14 @@
       i.onerror = () => i.remove();
       box.appendChild(i);
     }
-    if (!reel.video) $("#reel").hidden = true;
-    else mountReelPreview(reel, box);
+    if (!reel.video) {
+      $("#reel").hidden = true;
+      $("#reelBar").hidden = true;
+    } else mountReelPreview(reel, box);
   }
 
   /* ------------------------------------------------------- длительность */
-  // Подпись «02:14» рядом с годом шоурила: из content.js либо из файла.
+  // Длительность «02:14» справа в подписи к шоурилу: из content.js либо из файла.
   function fmtTime(sec) {
     if (!isFinite(sec) || sec <= 0) return "";
     const m = Math.floor(sec / 60);
@@ -75,7 +77,7 @@
   function setDuration(value) {
     const n = $("#reelDuration");
     if (!n) return;
-    n.textContent = value ? " — " + value : "";
+    n.textContent = value || "";
   }
 
   /* ------------------------------------------------- имя на первом экране */
@@ -399,7 +401,6 @@
     if (lastFocus) lastFocus.focus();
   }
 
-  $("#reelPlay").addEventListener("click", openReel);
   $("#reelOpen").addEventListener("click", openReel);
   $("#modalClose").addEventListener("click", closeModal);
   $("#modalBackdrop").addEventListener("click", closeModal);
