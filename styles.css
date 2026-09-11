@@ -210,11 +210,14 @@ ul, ol { list-style: none; }
   padding: calc(var(--nav-h) + clamp(14px, 2.4vh, 30px)) var(--pad) clamp(18px, 3vh, 34px);
 }
 
+/* Манифест слева, строка о себе справа — тот же ритм «лево / право»,
+   что у подписи к шоурилу и у линии под ним. */
 .hero__intro {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, .8fr) auto;
-  align-items: start;
-  gap: clamp(16px, 3vw, 40px);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: clamp(14px, 3vw, 48px);
   padding-bottom: clamp(16px, 3vh, 32px);
 }
 
@@ -222,17 +225,20 @@ ul, ol { list-style: none; }
   line-height: 1.85;
   color: var(--ink-2);
   max-width: 34ch;
+  text-wrap: pretty;
 }
 
-.hero__play {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  color: var(--ink);
-  transition: gap .35s var(--ease), color .3s var(--ease);
+.hero__note--bio { color: var(--muted); }
+
+/* Подпись над шоурилом */
+.hero__meta {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 0;
+  border-top: 1px solid var(--line-soft);
 }
-.hero__play svg { width: 16px; height: 16px; }
-.hero__play:hover { gap: 14px; color: var(--mint); }
 
 .hero__stage {
   position: relative;
@@ -732,12 +738,6 @@ ul, ol { list-style: none; }
 
 /* ------------------------------------------------------------ responsive */
 
-@media (max-width: 1100px) {
-  .hero__intro { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto; }
-  .hero__intro .hero__note:nth-child(3) { grid-column: 1 / -1; order: 3; }
-  .hero__play { order: 2; }
-}
-
 @media (max-width: 900px) {
   .table__head,
   .row__line {
@@ -788,14 +788,18 @@ ul, ol { list-style: none; }
   .lang { gap: 2px; }
   .lang__btn { padding: 8px 7px; }
 
+  /* Текст на телефоне идёт во всю ширину колонки: строки длиннее,
+     край ровнее, первый экран короче. */
   .hero__intro {
-    grid-template-columns: minmax(0, 1fr) auto;
-    gap: 14px 18px;
+    flex-direction: column;
+    gap: 12px;
   }
-  .hero__intro .hero__note:nth-child(2) { grid-column: 1 / -1; order: 4; }
-  .hero__intro .hero__note:nth-child(3) { grid-column: 1; order: 1; }
-  .hero__play { order: 1; align-self: start; }
-  .hero__note { line-height: 1.7; }
+  .hero__note {
+    max-width: none;
+    font-size: 11px;
+    letter-spacing: .1em;
+    line-height: 1.75;
+  }
 
   .contact { align-items: flex-start; flex-direction: column-reverse; }
   .contact__side { justify-items: start; }

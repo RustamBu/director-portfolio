@@ -193,7 +193,6 @@ const I18N = {
     "hero.place": "Warsaw / Europe",
 
     "reel.label": "Showreel",
-    "reel.play": "Play",
 
     "work.label": "Selected work",
     "work.projects": "projects",
@@ -226,7 +225,6 @@ const I18N = {
     "hero.place": "Warszawa / Europa",
 
     "reel.label": "Showreel",
-    "reel.play": "Odtwórz",
 
     "work.label": "Wybrane prace",
     "work.projects": "projekty",
