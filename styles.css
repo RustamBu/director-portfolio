@@ -230,7 +230,12 @@ ul, ol { list-style: none; }
 
 .hero__note--bio { color: var(--muted); }
 
-/* Подпись над шоурилом */
+/* Шоурила может не быть (в content.js не задан файл) — тогда app.js прячет
+   и место под него, и подпись: hidden должен побеждать display: flex. */
+.hero__stage[hidden],
+.hero__meta[hidden] { display: none; }
+
+/* Подпись над шоурилом — по ширине кадра, её ставит app.js */
 .hero__meta {
   display: flex;
   align-items: baseline;
@@ -240,13 +245,18 @@ ul, ol { list-style: none; }
   border-top: 1px solid var(--line-soft);
 }
 
+/* Место под шоурил: забирает остаток высоты первого экрана и центрирует в нём
+   пару «подпись + кадр». */
 .hero__stage {
   position: relative;
-  flex: 1 1 auto;
+  flex: 1 1 0%;
   min-height: clamp(160px, 26vh, 460px);
-  overflow: hidden;
-  background: var(--bg-3);
-  border: 1px solid var(--line-soft);
+  /* Высота — только остаток экрана: размер кадра на неё не влияет, иначе при
+     сжатии окна кадр раздувал бы первый экран и имя уезжало бы под сгиб. */
+  contain: size;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .hero__rule {
@@ -285,6 +295,29 @@ ul, ol { list-style: none; }
 }
 
 /* ------------------------------------------------------------------- reel */
+
+/* Подпись и кадр стоят одной колонкой и одной ширины — её ставит app.js. */
+.reel__box {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+}
+
+/* Кадр шоурила. Пропорцию берём у самого файла (--reel-ar подставляет app.js),
+   а высоту под неё считает app.js: кадр целиком вписан в свободное место, и
+   видео не режется ни на широком мониторе, ни на низком экране ноутбука.
+   Без JS кадр всё равно держит пропорцию — только во всю ширину. */
+.reel {
+  --reel-ar: 1.3333;
+  position: relative;
+  width: 100%;
+  aspect-ratio: var(--reel-ar);
+  overflow: hidden;
+  background: var(--bg-3);
+  border: 1px solid var(--line-soft);
+}
 
 .reel__media,
 .reel__media img,

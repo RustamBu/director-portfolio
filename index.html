@@ -149,16 +149,22 @@
       <p class="mono hero__note hero__note--bio" id="heroBio"></p>
     </div>
 
-    <!-- Подпись к шоурилу: слева название и год, справа длительность.
-         Вместе с линией под видео берёт кадр в тонкую рамку. -->
-    <div class="hero__meta mono muted" id="reelBar">
-      <span><span data-i18n="reel.label"></span> <span id="reelYear"></span></span>
-      <span id="reelDuration"></span>
-    </div>
+    <!-- Шоурил на первом экране. Кадр держит пропорции самого файла (их
+         подставляет app.js), поэтому видео видно целиком и не режет на низких
+         экранах ноутбука. Подпись сверху идёт по ширине кадра: вместе с линией
+         под видео она берёт его в тонкую рамку. -->
+    <div class="hero__stage" id="reel">
+      <div class="reel__box" id="reelBox">
+        <div class="hero__meta mono muted" id="reelBar">
+          <span><span data-i18n="reel.label"></span> <span id="reelYear"></span></span>
+          <span id="reelDuration"></span>
+        </div>
 
-    <div class="hero__stage reel" id="reel">
-      <span class="reel__media" id="reelMedia"></span>
-      <button class="reel__open" type="button" id="reelOpen" aria-label="Open showreel full screen"></button>
+        <div class="reel" id="reelFrame">
+          <span class="reel__media" id="reelMedia"></span>
+          <button class="reel__open" type="button" id="reelOpen" aria-label="Open showreel full screen"></button>
+        </div>
+      </div>
     </div>
 
     <div class="hero__rule">

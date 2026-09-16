@@ -56,6 +56,7 @@
       i.src = reel.poster;
       i.alt = "";
       i.decoding = "async";
+      i.onload = () => setReelRatio(i.naturalWidth, i.naturalHeight);
       i.onerror = () => i.remove();
       box.appendChild(i);
     }
@@ -63,6 +64,38 @@
       $("#reel").hidden = true;
       $("#reelBar").hidden = true;
     } else mountReelPreview(reel, box);
+  }
+
+  /* ------------------------------------------------ пропорции шоурила */
+  // Кадр на первом экране принимает пропорцию файла (4:3, 16:9, вертикаль —
+  // что угодно), поэтому видео видно целиком и его не режет по краям.
+  function setReelRatio(w, h) {
+    if (!w || !h) return;
+    const frame = $("#reelFrame");
+    if (!frame) return;
+    frame.style.setProperty("--reel-ar", (w / h).toFixed(4));
+    fitReel();
+  }
+
+  // Вписываем кадр в свободное место под него: упираемся в высоту на низком
+  // экране ноутбука и в ширину на телефоне. Подпись над кадром идёт по его
+  // ширине, поэтому её высоту вычитаем из свободного места.
+  function fitReel() {
+    const stage = $("#reel");
+    const box = $("#reelBox");
+    const frame = $("#reelFrame");
+    const bar = $("#reelBar");
+    if (!stage || !box || !frame || stage.hidden) return;
+
+    const ar = parseFloat(getComputedStyle(frame).getPropertyValue("--reel-ar"));
+    const space = stage.getBoundingClientRect();
+    const barH = bar && !bar.hidden ? bar.getBoundingClientRect().height : 0;
+    const free = space.height - barH;
+    if (!ar || !space.width || free <= 0) return;
+
+    const w = Math.min(space.width, free * ar);
+    box.style.width = w + "px";
+    frame.style.height = w / ar + "px";
   }
 
   /* ------------------------------------------------------- длительность */
@@ -100,7 +133,11 @@
   function queueFit() {
     if (fitPending) return;
     fitPending = true;
-    requestAnimationFrame(() => { fitPending = false; fitHeroName(); });
+    requestAnimationFrame(() => {
+      fitPending = false;
+      fitHeroName();   // имя меняет свою высоту, а с ней и место под шоурил,
+      fitReel();       // поэтому кадр считаем следом за именем
+    });
   }
 
   window.addEventListener("resize", queueFit, { passive: true });
@@ -145,9 +182,10 @@
       .forEach((a) => vid.setAttribute(a, ""));
     if (reel.poster) vid.poster = reel.poster;
 
-    if (!reel.duration) {
-      vid.addEventListener("loadedmetadata", () => setDuration(fmtTime(vid.duration)));
-    }
+    vid.addEventListener("loadedmetadata", () => {
+      setReelRatio(vid.videoWidth, vid.videoHeight);
+      if (!reel.duration) setDuration(fmtTime(vid.duration));
+    });
 
     // Не открылся файл (нет доступа, лимит Drive) — остаётся постер.
     vid.addEventListener("error", () => vid.remove());
@@ -517,6 +555,7 @@
   applyLang();
   onScroll();
   fitHeroName();
+  fitReel();
 
   // ?noanim=1 — мгновенно показать всё без анимаций (удобно для скриншотов)
   if (/[?&]noanim/.test(location.search)) {
