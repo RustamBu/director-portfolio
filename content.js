@@ -61,11 +61,14 @@ const SITE = {
    cover  — вертикальная обложка 4:5 из assets/img/covers/ (необязательно).
             Если файла нет — тихо показывается poster.
    credits — произвольные строки в раскрытой карточке
+   edited — true: работа ещё раз показывается в блоке «Director / Editor»
+            (где я и режиссёр, и монтажёр). Убери строку — пропадёт оттуда.
    ------------------------------------------------------------------------- */
 
 const PROJECTS = [
   {
     title: "Nnaia",
+    edited: true,
     year: "2025",
     format: { en: "Music Video", pl: "Teledysk" },
     poster: "https://i.ytimg.com/vi/GwTPkAQkCBA/maxresdefault.jpg",
@@ -105,6 +108,7 @@ const PROJECTS = [
   },
   {
     title: "Wrong Leg",
+    edited: true,
     year: "2025",
     format: { en: "Music Video", pl: "Teledysk" },
     poster: "https://i.ytimg.com/vi/Mahfb3rby_w/maxresdefault.jpg",
@@ -115,6 +119,7 @@ const PROJECTS = [
   },
   {
     title: "Bizhu do Tebe",
+    edited: true,
     year: "2024",
     format: { en: "Commercial", pl: "Reklama" },
     poster: "https://i.ytimg.com/vi/TprChxO_TM4/maxresdefault.jpg",
@@ -135,6 +140,7 @@ const PROJECTS = [
   },
   {
     title: "Solfi",
+    edited: true,
     year: "2024",
     format: { en: "Commercial", pl: "Reklama" },
     poster: "https://i.ytimg.com/vi/ynHzAmfBHU0/maxresdefault.jpg",
@@ -144,6 +150,7 @@ const PROJECTS = [
   },
   {
     title: "The Choice",
+    edited: true,
     year: "2024",
     format: { en: "Experimental Short Film", pl: "Eksperymentalny krótki metraż" },
     poster: "https://i.ytimg.com/vi/TihlObaQ7WE/maxresdefault.jpg",
@@ -195,6 +202,8 @@ const I18N = {
     "reel.label": "Showreel",
 
     "work.label": "Selected work",
+    "work.group.director": "Director",
+    "work.group.editor": "Director / Editor",
     "work.projects": "projects",
     "work.sort": "Order",
     "work.col.n": "№",
@@ -227,6 +236,8 @@ const I18N = {
     "reel.label": "Showreel",
 
     "work.label": "Wybrane prace",
+    "work.group.director": "Reżyser",
+    "work.group.editor": "Reżyser / Montażysta",
     "work.projects": "projekty",
     "work.sort": "Kolejność",
     "work.col.n": "№",

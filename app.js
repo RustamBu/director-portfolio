@@ -36,7 +36,7 @@
 
   /* ---------------------------------------------------------------- state */
   let sortDesc = true;      // true — как в content.js, false — наоборот
-  let openId = null;        // раскрытая строка
+  let openId = null;        // раскрытая строка: "группа:индекс"
 
   /* --------------------------------------------------------------- static */
   function renderStatic() {
@@ -229,17 +229,25 @@
   /* ----------------------------------------------------------------- work */
   // Порядок в таблице = порядок массива PROJECTS в content.js.
   // Кнопка сортировки просто переворачивает список.
-  function sorted() {
-    const list = PROJECTS.map((p, i) => ({ p, i }));
+  // Второй блок «Director / Editor» — те же работы с edited: true.
+  function sorted(filter) {
+    const list = PROJECTS.map((p, i) => ({ p, i })).filter(({ p }) => !filter || filter(p));
     return sortDesc ? list : list.reverse();
   }
 
   function renderWork() {
-    const list = $("#workList");
-    list.innerHTML = "";
     $("#sortArrow").textContent = sortDesc ? "↓" : "↑";
+    renderGroup($("#workList"), "d", null);
+    renderGroup($("#editList"), "e", (p) => p.edited);
+    // блок монтажа прячется целиком, если в нём нет ни одной работы
+    $("#editList").closest(".work-group").hidden = !PROJECTS.some((p) => p.edited);
+  }
 
-    sorted().forEach(({ p, i }, n) => {
+  function renderGroup(list, group, filter) {
+    list.innerHTML = "";
+
+    sorted(filter).forEach(({ p, i: idx }, n) => {
+      const i = group + ":" + idx;
       const hasVideo = !!(p.video && (p.video.id || p.video.src));
       const row = el("article", "row");
       if (openId === i) row.classList.add("is-open");

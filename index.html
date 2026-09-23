@@ -190,14 +190,32 @@
       </button>
     </div>
 
-    <div class="table">
-      <div class="table__head mono muted" aria-hidden="true">
-        <span data-i18n="work.col.n"></span>
-        <span data-i18n="work.col.title"></span>
-        <span data-i18n="work.col.format"></span>
-        <span data-i18n="work.col.year"></span>
+    <!-- director: все работы -->
+    <div class="work-group">
+      <h2 class="work-group__title" data-i18n="work.group.director"></h2>
+      <div class="table">
+        <div class="table__head mono muted" aria-hidden="true">
+          <span data-i18n="work.col.n"></span>
+          <span data-i18n="work.col.title"></span>
+          <span data-i18n="work.col.format"></span>
+          <span data-i18n="work.col.year"></span>
+        </div>
+        <div class="table__body" id="workList"></div>
       </div>
-      <div class="table__body" id="workList"></div>
+    </div>
+
+    <!-- editor: работы с edited: true в content.js -->
+    <div class="work-group">
+      <h2 class="work-group__title" data-i18n="work.group.editor"></h2>
+      <div class="table">
+        <div class="table__head mono muted" aria-hidden="true">
+          <span data-i18n="work.col.n"></span>
+          <span data-i18n="work.col.title"></span>
+          <span data-i18n="work.col.format"></span>
+          <span data-i18n="work.col.year"></span>
+        </div>
+        <div class="table__body" id="editList"></div>
+      </div>
     </div>
   </section>
 

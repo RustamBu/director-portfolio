@@ -382,6 +382,19 @@ ul, ol { list-style: none; }
 
 /* ------------------------------------------------------------------ table */
 
+/* Группы работ: Director — все, Director / Editor — с монтажом */
+.work-group + .work-group { margin-top: clamp(56px, 9vh, 110px); }
+
+.work-group__title {
+  margin: 0 0 clamp(14px, 2vh, 22px);
+  font-size: clamp(28px, 4.2vw, 56px);
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -.02em;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+
 .table__head,
 .row__line {
   display: grid;
