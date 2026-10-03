@@ -8,6 +8,7 @@
   the-choice.jpg        The Choice
   chimera.jpg           Chimera
   nnaia.jpg             Nnaia
+  papryka.jpg           Papryka
 
 Клади JPEG, а не PNG: у фото-обложек PNG весит в 15–20 раз больше при том
 же виде. Пока файла нет — в карточке тихо показывается кадр 16:9 из поля

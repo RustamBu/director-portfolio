@@ -67,6 +67,17 @@ const SITE = {
 
 const PROJECTS = [
   {
+    title: "Papryka",
+    edited: true,
+    year: "2026",
+    format: { en: "Short Film", pl: "Krótki metraż" },
+    poster: "assets/img/papryka.jpg",
+    cover: "assets/img/covers/papryka.jpg",
+    video: { kind: "drive", id: "1vyOrKMNHlAnLk7JJAjRGVXXl6RD8H8q-" },
+    description: null,
+    credits: [],
+  },
+  {
     title: "Nnaia",
     edited: true,
     year: "2025",
