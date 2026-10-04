@@ -228,8 +228,6 @@ ul, ol { list-style: none; }
   text-wrap: pretty;
 }
 
-.hero__note--bio { color: var(--muted); }
-
 /* Шоурила может не быть (в content.js не задан файл) — тогда app.js прячет
    и место под него, и подпись: hidden должен побеждать display: flex. */
 .hero__stage[hidden],

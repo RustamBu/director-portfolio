@@ -222,7 +222,6 @@
   /* ----------------------------------------------------------------- hero */
   function renderHero() {
     $("#heroStatement").textContent = (L(ABOUT.statement) || []).join(" ");
-    $("#heroBio").textContent = L(SITE.bio);
     queueFit();
   }
 

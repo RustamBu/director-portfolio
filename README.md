@@ -36,7 +36,6 @@ python3 -m http.server 8000
 name: "RUSTAM BULATOV",       // имя в шапке и подвале
 city: { en: "Warsaw", pl: "Warszawa" },
 email: "rustambulatov05@gmail.com",
-bio: { en: "Film director based in Warsaw...", pl: "Reżyser filmowy z Warszawy..." }, // строка на первом экране
 socials: [ { label: "Instagram", url: "https://www.instagram.com/rustambulatov_/" } ],
 ```
 
