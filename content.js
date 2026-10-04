@@ -21,12 +21,6 @@ const SITE = {
   // Контакты
   email: "rustambulatov05@gmail.com",
 
-  // Короткая строка на первом экране, рядом с манифестом
-  bio: {
-    en: "Film director based in Warsaw, working across Europe. Music videos, commercials and films.",
-    pl: "Reżyser filmowy z Warszawy, pracuje w całej Europie. Teledyski, reklamy i filmy.",
-  },
-
   // Соцсети. Убери строку — исчезнет и ссылка.
   socials: [
     { label: "Instagram", url: "https://www.instagram.com/rustambulatov_/" },
